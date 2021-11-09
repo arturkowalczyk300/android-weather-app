@@ -1,4 +1,4 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject;
 
-public class TodayWeatherWebService {
+public class AddEditWeatherReadingActivity {
 }
