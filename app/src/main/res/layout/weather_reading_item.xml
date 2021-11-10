@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/textView_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12.5*C"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginRight="150dp"/>
+
+        <TextView
+            android:id="@+id/textView_readTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "12:09 10.11.2021"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_toRightOf="@+id/textView_temperature"/>
+
+        <TextView
+            android:id="@+id/textView_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1023 hPa"
+            android:layout_below="@+id/textView_temperature"/>
+
+        <TextView
+            android:id="@+id/textView_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="57%"
+            android:layout_below="@+id/textView_temperature"
+            android:layout_alignLeft="@+id/textView_readTime"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
