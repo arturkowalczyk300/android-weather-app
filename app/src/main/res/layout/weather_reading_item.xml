@@ -13,9 +13,14 @@
             android:id="@+id/textView_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12.5*C"
+            android:text="12.5"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="°C"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:layout_marginRight="150dp"/>
+            android:layout_toRightOf="@id/textView_temperature"/>
 
         <TextView
             android:id="@+id/textView_readTime"
@@ -23,23 +28,38 @@
             android:layout_height="wrap_content"
             android:text = "12:09 10.11.2021"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_toRightOf="@+id/textView_temperature"/>
+            android:layout_toRightOf="@+id/textView_temperature"
+            android:layout_marginLeft="150dp"/>
 
         <TextView
             android:id="@+id/textView_pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1023hPa"
+            android:text="1023"
+            android:layout_below="@+id/textView_temperature"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hPa"
             android:layout_below="@+id/textView_temperature"
-            android:layout_marginRight="30dp"/>
+            android:layout_toRightOf="@id/textView_pressure"
+            />
 
         <TextView
             android:id="@+id/textView_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="57%"
+            android:layout_marginLeft="30dp"
+            android:text="57"
             android:layout_below="@+id/textView_temperature"
             android:layout_toRightOf="@id/textView_pressure"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%"
+            android:layout_below="@+id/textView_temperature"
+            android:layout_toRightOf="@id/textView_humidity" />
 
     </RelativeLayout>
 
