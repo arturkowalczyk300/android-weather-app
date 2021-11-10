@@ -2,8 +2,10 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
 
 import java.util.Date;
+
 
 @Entity(tableName = "weather_table")
 public class WeatherReading {

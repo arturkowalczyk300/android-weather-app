@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherReadingAdapter.WeatherReadingHolder> {
-    private AdapterView.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public WeatherReadingAdapter() {
         super(DIFF_CALLBACK);
