@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private WeatherReadingsViewModel weatherReadingsViewModel;
-
 
 
     @Override
@@ -88,14 +90,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_WEATHER_READING_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == ADD_WEATHER_READING_REQUEST && resultCode == RESULT_OK) {
             // TODO: add there readTime handle
             String temperatureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_TEMPERATURE);
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
@@ -105,10 +106,10 @@ public class MainActivity extends AppCompatActivity {
             weatherReadingsViewModel.insert(weatherReading);
 
             Toast.makeText(this, "Weather reading saved!", Toast.LENGTH_SHORT).show();
-        }else if(requestCode == EDIT_WEATHER_READING_REQUEST && resultCode == RESULT_OK){
-            int id=data.getIntExtra(AddEditWeatherReading.EXTRA_ID, -1);
+        } else if (requestCode == EDIT_WEATHER_READING_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(AddEditWeatherReading.EXTRA_ID, -1);
 
-            if(id == -1){
+            if (id == -1) {
                 Toast.makeText(this, "Weather reading can't be updated!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -119,16 +120,33 @@ public class MainActivity extends AppCompatActivity {
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
 
             float temperature = Float.parseFloat(temperatureStr);
-            int pressure = (int)Float.parseFloat(pressureStr);
-            int humidity =  (int)Float.parseFloat(humidityStr);
+            int pressure = (int) Float.parseFloat(pressureStr);
+            int humidity = (int) Float.parseFloat(humidityStr);
 
             WeatherReading weatherReading = new WeatherReading(null, temperature, pressure, humidity);
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 
             Toast.makeText(this, "Weather reading updated!", Toast.LENGTH_SHORT).show();
-        }else Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
     }
 
-    // TODO: add here options menu handle
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_all_weather_readings:
+                weatherReadingsViewModel.deleteAllWeatherReadings();
+                Toast.makeText(this, "All weather readings deleted!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
