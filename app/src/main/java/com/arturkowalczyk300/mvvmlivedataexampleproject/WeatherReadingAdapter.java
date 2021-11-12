@@ -32,7 +32,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
 
         @Override
         public boolean areContentsTheSame(@NonNull WeatherReading oldItem, @NonNull WeatherReading newItem) {
-            return oldItem.getReadTime().equals(newItem.getReadTime()) &&
+            return //oldItem.getReadTime().equals(newItem.getReadTime()) && // TODO: implement readTime back
                     oldItem.getTemperature() == newItem.getTemperature() &&
                     oldItem.getPressure() == newItem.getPressure() &&
                     oldItem.getHumidity() == newItem.getHumidity();
@@ -50,7 +50,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
     @Override
     public void onBindViewHolder(@NonNull WeatherReadingHolder holder, int position) {
         WeatherReading currentWeatherReading = getItem(position);
-        holder.textViewReadTime.setText(currentWeatherReading.getReadTime().toString());
+        //holder.textViewReadTime.setText(currentWeatherReading.getReadTime().toString()); //todo: fix readTime handle, it was on-launch crash reason
         holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
         holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
         holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));

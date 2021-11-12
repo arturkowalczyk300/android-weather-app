@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddEditWeatherReading">
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/datePickerReadTime"
+        android:layout_width="wrap_content"
+        android:layout_height="230dp"
+        app:picker_curved="true"
+        app:picker_cyclic="true"
+        app:picker_visibleItemCount="3"/>
+
+    <TextView
+        android:id="@+id/textViewTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature:"
+        android:layout_below="@+id/datePickerReadTime"/>
+
+    <EditText
+        android:id="@+id/editTextTemperature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/datePickerReadTime"
+        android:layout_toRightOf="@+id/textView_temperature"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/textViewPressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pressure:"
+        android:layout_below="@+id/editTextTemperature"/>
+    <EditText
+        android:id="@+id/editTextPressure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/editTextTemperature"
+        android:layout_toRightOf="@id/textViewPressure"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/textViewHumidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Humidity:"
+        android:layout_below="@+id/editTextPressure"/>
+    <EditText
+        android:id="@+id/editTextHumidity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/editTextPressure"
+        android:layout_toRightOf="@id/textViewHumidity"
+        android:layout_marginTop="10dp"/>
+</RelativeLayout>
