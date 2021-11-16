@@ -1,10 +1,12 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject;
 
+import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -13,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.arturkowalczyk300.mvvmlivedataexampleproject.AddEditWeatherReading.DATE_FORMAT;
 
 public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherReadingAdapter.WeatherReadingHolder> {
     private OnItemClickListener listener;
@@ -32,7 +37,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
 
         @Override
         public boolean areContentsTheSame(@NonNull WeatherReading oldItem, @NonNull WeatherReading newItem) {
-            return //oldItem.getReadTime().equals(newItem.getReadTime()) && // TODO: implement readTime back
+            return oldItem.getReadTime().equals(newItem.getReadTime()) && // TODO: implement readTime back
                     oldItem.getTemperature() == newItem.getTemperature() &&
                     oldItem.getPressure() == newItem.getPressure() &&
                     oldItem.getHumidity() == newItem.getHumidity();
@@ -50,10 +55,20 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
     @Override
     public void onBindViewHolder(@NonNull WeatherReadingHolder holder, int position) {
         WeatherReading currentWeatherReading = getItem(position);
-        //holder.textViewReadTime.setText(currentWeatherReading.getReadTime().toString()); //todo: fix readTime handle, it was on-launch crash reason
-        holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
-        holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
-        holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+        try {
+            holder.textViewReadTime.setText(dateFormat.format(currentWeatherReading.getReadTime()));
+            holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
+            holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
+            holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
+        }
+        catch(NullPointerException ex)
+        {
+            Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class="+ex.getStackTrace()[0].getClassName()
+                    +", method="+ex.getStackTrace()[0].getMethodName()
+                    +", line="+ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public WeatherReading getWeatherReadingAt(int position) {

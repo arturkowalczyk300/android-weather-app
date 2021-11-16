@@ -7,27 +7,41 @@
     android:orientation="vertical"
     tools:context=".AddEditWeatherReading">
 
-    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
-        android:id="@+id/datePickerReadTime"
-        android:layout_width="wrap_content"
-        android:layout_height="230dp"
-        app:picker_curved="true"
-        app:picker_cyclic="true"
-        app:picker_visibleItemCount="3"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/linear_layout_pickers">
+    <DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="6"
+        android:calendarViewShown="true"
+        android:spinnersShown="false"/>
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_below="@+id/date_picker" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textViewTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Temperature:"
-        android:layout_below="@+id/datePickerReadTime"/>
+        android:layout_below="@+id/linear_layout_pickers"/>
 
     <EditText
         android:id="@+id/editTextTemperature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:layout_below="@+id/datePickerReadTime"
+        android:layout_below="@+id/linear_layout_pickers"
         android:layout_toRightOf="@+id/textView_temperature"
         android:layout_marginTop="10dp"/>
 

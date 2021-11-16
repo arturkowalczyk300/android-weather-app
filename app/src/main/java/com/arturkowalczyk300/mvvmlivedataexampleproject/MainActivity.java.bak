@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -79,12 +80,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(WeatherReading weatherReading) {
                 Intent intent = new Intent(MainActivity.this, AddEditWeatherReading.class);
-                intent.putExtra(AddEditWeatherReading.EXTRA_ID, weatherReading.getId());
-                //intent.putExtra(AddEditWeatherReading.EXTRA_READTIME,)
-                intent.putExtra(AddEditWeatherReading.EXTRA_TEMPERATURE, weatherReading.getTemperature());
-                intent.putExtra(AddEditWeatherReading.EXTRA_PRESSURE, weatherReading.getPressure());
-                intent.putExtra(AddEditWeatherReading.EXTRA_HUMIDITY, weatherReading.getHumidity());
+                try {
+                    intent.putExtra(AddEditWeatherReading.EXTRA_ID, weatherReading.getId());
+                    intent.putExtra(AddEditWeatherReading.EXTRA_READTIME, weatherReading.getReadTimeLong());
+                    intent.putExtra(AddEditWeatherReading.EXTRA_TEMPERATURE, weatherReading.getTemperature());
+                    intent.putExtra(AddEditWeatherReading.EXTRA_PRESSURE, weatherReading.getPressure());
+                    intent.putExtra(AddEditWeatherReading.EXTRA_HUMIDITY, weatherReading.getHumidity());
 
+                } catch (NullPointerException ex) {
+                    Toast.makeText(getApplicationContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
+                            + ", method=" + ex.getStackTrace()[0].getMethodName()
+                            + ", line=" + ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();
+                }
                 startActivityForResult(intent, EDIT_WEATHER_READING_REQUEST);
             }
         });
@@ -97,12 +104,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ADD_WEATHER_READING_REQUEST && resultCode == RESULT_OK) {
-            // TODO: add there readTime handle
+
+            long readTimeLong = data.getLongExtra(AddEditWeatherReading.EXTRA_READTIME, -1);
+            Date readTime = new Date(readTimeLong);
             String temperatureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_TEMPERATURE);
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
 
-            WeatherReading weatherReading = new WeatherReading(null, Float.parseFloat(temperatureStr), Integer.parseInt(pressureStr), Integer.parseInt(humidityStr));
+            WeatherReading weatherReading = new WeatherReading(readTime, Float.parseFloat(temperatureStr), Integer.parseInt(pressureStr), Integer.parseInt(humidityStr));
             weatherReadingsViewModel.insert(weatherReading);
 
             Toast.makeText(this, "Weather reading saved!", Toast.LENGTH_SHORT).show();
@@ -114,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            //todo: add there readTime handle
+            long readTimeLong = data.getLongExtra(AddEditWeatherReading.EXTRA_READTIME, -1);
+            Date readTime = new Date(readTimeLong);
             String temperatureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_TEMPERATURE);
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
@@ -123,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             int pressure = (int) Float.parseFloat(pressureStr);
             int humidity = (int) Float.parseFloat(humidityStr);
 
-            WeatherReading weatherReading = new WeatherReading(null, temperature, pressure, humidity);
+            WeatherReading weatherReading = new WeatherReading(readTime, temperature, pressure, humidity);
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 

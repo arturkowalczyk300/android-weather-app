@@ -40,7 +40,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version" //Room
     annotationProcessor "androidx.room:room-compiler:$room_version" //Room annotation processor
     implementation 'com.squareup.retrofit2:retrofit:2.9.0' //Retrofit
-    implementation 'com.github.florent37:singledateandtimepicker:2.2.7' // combined date and time picker
 
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'

@@ -38,6 +38,10 @@ public class WeatherReading {
         return readTime;
     }
 
+    public long getReadTimeLong() {
+        return readTime.getTime();
+    }
+
     public float getTemperature() {
         return temperature;
     }

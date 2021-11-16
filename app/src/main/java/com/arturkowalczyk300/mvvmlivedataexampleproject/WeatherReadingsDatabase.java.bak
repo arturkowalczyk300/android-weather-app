@@ -15,6 +15,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.arturkowalczyk300.mvvmlivedataexampleproject.AddEditWeatherReading.DATE_START_YEAR;
+
 
 @Database(entities = {WeatherReading.class}, version = 1)
 @TypeConverters({Converters.class})
@@ -51,7 +53,8 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
         @Override
         protected Void doInBackground(Void... voids)
         {
-            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 20.0f, 1023, 80));
+            Date date1 = new Date(2021-DATE_START_YEAR, 8, 6, 20, 11);
+            weatherDAO.insert(new WeatherReading(date1, 20.0f, 1023, 80));
             weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 25.0f, 1030, 75));
             weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 30.0f, 1033, 70));
             return null;
