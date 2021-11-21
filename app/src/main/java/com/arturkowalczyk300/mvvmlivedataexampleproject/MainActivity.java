@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int ADD_WEATHER_READING_REQUEST = 1;
     public static final int EDIT_WEATHER_READING_REQUEST = 2;
 
-
     private WeatherReadingsViewModel weatherReadingsViewModel;
+
+    WeatherReadingFromApi weatherReadingFromApi;
 
 
     @Override
