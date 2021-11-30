@@ -22,13 +22,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WeatherReadingsRepository {
+    public static final int MAX_COUNT = 10;
+
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
 
     private static final String CITY_NAME = "Wolow";
     private static final String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
     private static final String UNITS = "metric";
-    private static final int MAX_COUNT = 10;
+
     private static final int ERROR_VALUE_INT = -1;
     private static final float ERROR_VALUE_FLOAT = -1;
 

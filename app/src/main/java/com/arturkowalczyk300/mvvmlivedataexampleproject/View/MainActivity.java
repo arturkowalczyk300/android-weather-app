@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
@@ -110,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Integer integer) {
                 textViewRecordsCount.setText(String.valueOf(integer));
+
+                if(integer.intValue() > WeatherReadingsRepository.MAX_COUNT){
+                    weatherReadingsViewModel.deleteExcessWeatherReadings();
+                    Toast.makeText(getApplicationContext(), "Excess records deleted!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
