@@ -32,6 +32,11 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.delete(weatherReading);
     }
 
+    public void deleteExcessWeatherReadings()
+    {
+        repository.deleteExcessWeatherReadings();
+    }
+
     public void deleteAllWeatherReadings() {
         repository.deleteAllWeatherReadings();
     }

@@ -5,4 +5,8 @@
         android:id="@+id/delete_all_weather_readings"
         android:title="Delete all weather readings"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/delete_excess_weather_readings"
+        android:title="Delete excess weather readings"
+        app:showAsAction="never"/>
 </menu>

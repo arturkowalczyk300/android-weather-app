@@ -29,4 +29,7 @@ public interface WeatherDAO {
     @Query("SELECT COUNT(*) FROM weather_table")
     LiveData<Integer> getCount();
 
+    @Query("DELETE FROM weather_table where id NOT IN(SELECT id from weather_table ORDER BY id DESC LIMIT :MAX_COUNT)")
+    void deleteExcess(int MAX_COUNT);
+
 }

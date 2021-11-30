@@ -28,6 +28,7 @@ public class WeatherReadingsRepository {
     private static final String CITY_NAME = "Wolow";
     private static final String API_KEY = "to_be_written";
     private static final String UNITS = "metric";
+    private static final int MAX_COUNT = 10;
     private static final int ERROR_VALUE_INT = -1;
     private static final float ERROR_VALUE_FLOAT = -1;
 
@@ -36,7 +37,7 @@ public class WeatherReadingsRepository {
     private int pressure;
     private int humidity;
 
-    private WeatherReading getWeatherReadingFromApi() {
+    private WeatherReading getAndInsertWeatherReadingFromApi() {
         readTime = Calendar.getInstance().getTime();
         temperature = ERROR_VALUE_FLOAT;
         pressure = ERROR_VALUE_INT;
@@ -88,9 +89,7 @@ public class WeatherReadingsRepository {
         weatherDAO = database.weatherDAO();
         allWeatherReadings = weatherDAO.getAllWeatherReadings();
 
-        //get current weather reading from API
-        getWeatherReadingFromApi();
-
+        getAndInsertWeatherReadingFromApi();
     }
 
     public void insert(WeatherReading weatherReading) {
@@ -103,6 +102,11 @@ public class WeatherReadingsRepository {
 
     public void delete(WeatherReading weatherReading) {
         new DeleteWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
+    }
+
+    public void deleteExcessWeatherReadings()
+    {
+        new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(MAX_COUNT);
     }
 
     public void deleteAllWeatherReadings() {
@@ -130,6 +134,7 @@ public class WeatherReadingsRepository {
             weatherDAO.insert(weatherReadings[0]);
             return null;
         }
+
     }
 
     private static class UpdateWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
@@ -155,9 +160,24 @@ public class WeatherReadingsRepository {
 
         @Override
         protected Void doInBackground(WeatherReading... weatherReadings) {
-            weatherDAO.delete(weatherReadings[0]);
+            weatherDAO.delete(weatherReadings[0]); //delete given object
             return null;
         }
+    }
+
+    private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private WeatherDAO weatherDAO;
+
+        private DeleteExcessWeatherReadingsAsyncTask(WeatherDAO weatherDAO)
+        {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            weatherDAO.deleteExcess(integers[0]);
+            return null;
+        };
     }
 
     private static class DeleteAllWeatherReadingsAsyncTask extends AsyncTask<Void, Void, Void> {

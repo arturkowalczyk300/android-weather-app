@@ -170,6 +170,10 @@ public class MainActivity extends AppCompatActivity {
                 weatherReadingsViewModel.deleteAllWeatherReadings();
                 Toast.makeText(this, "All weather readings deleted!", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.delete_excess_weather_readings:
+                weatherReadingsViewModel.deleteExcessWeatherReadings();
+                Toast.makeText(this, "Excess records deleted!", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
