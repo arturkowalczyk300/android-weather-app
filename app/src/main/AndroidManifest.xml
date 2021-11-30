@@ -12,10 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVMLivedataExampleProject">
-        <activity android:name=".AddEditWeatherReading"
-            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".View.AddEditWeatherReading"
+            android:parentActivityName=".View.MainActivity"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".View.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -5,13 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".View.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/linear_layout_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Count: "/>
+        <TextView
+            android:id="@+id/textView_records_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="7"/>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/weather_reading_item"/>
+        app:layout_anchor="@id/linear_layout_top_bar"
+        app:layout_anchorGravity="bottom"
+        android:layout_gravity="bottom"
+        tools:listitem="@layout/weather_reading_item"
+        android:translationY="20dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_weather_reading"
