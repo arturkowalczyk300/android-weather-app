@@ -1,8 +1,16 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
+import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,16 +19,21 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.View.MainActivity;
 
 import java.text.SimpleDateFormat;
 
 import static com.arturkowalczyk300.mvvmlivedataexampleproject.View.AddEditWeatherReading.DATE_FORMAT;
 
 public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherReadingAdapter.WeatherReadingHolder> {
-    private OnItemClickListener listener;
 
+
+    private boolean dataLoadedFromApiFlag;
+    private OnItemClickListener listener;
+    private ValueAnimator recyclerItemAnimation;
     public WeatherReadingAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -54,17 +67,32 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         WeatherReading currentWeatherReading = getItem(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
+        //finally there should be code for animate newest item for few seconds
+        if (position == 0 && dataLoadedFromApiFlag ) {
+            int colorFrom= Color.parseColor(WeatherReadingsRepository.getRecyclerNewItemColor());
+            int colorTo= Color.parseColor(WeatherReadingsRepository.getRecyclerNormalItemColor());
+
+            recyclerItemAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            recyclerItemAnimation.setDuration(5000);
+            recyclerItemAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int animatedValue = (int)animation.getAnimatedValue();
+                    holder.relativeLayout.setBackgroundColor(animatedValue);
+                }
+            });
+            recyclerItemAnimation.start();
+        }
+
         try {
             holder.textViewReadTime.setText(dateFormat.format(currentWeatherReading.getReadTime()));
             holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
             holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
             holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
-        }
-        catch(NullPointerException ex)
-        {
-            Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class="+ex.getStackTrace()[0].getClassName()
-                    +", method="+ex.getStackTrace()[0].getMethodName()
-                    +", line="+ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();
+        } catch (NullPointerException ex) {
+            Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
+                    + ", method=" + ex.getStackTrace()[0].getMethodName()
+                    + ", line=" + ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -77,6 +105,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         private TextView textViewTemperature;
         private TextView textViewPressure;
         private TextView textViewHumidity;
+        private RelativeLayout relativeLayout;
 
         public WeatherReadingHolder(View itemView) {
             super(itemView);
@@ -84,7 +113,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             textViewTemperature = itemView.findViewById(R.id.textView_temperature);
             textViewPressure = itemView.findViewById(R.id.textView_pressure);
             textViewHumidity = itemView.findViewById(R.id.textView_humidity);
-
+            relativeLayout = itemView.findViewById(R.id.recycler_relative_layout);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,5 +132,8 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+    public void setDataLoadedFromApiFlag(boolean dataLoadedFromApiFlag) {
+        this.dataLoadedFromApiFlag = dataLoadedFromApiFlag;
     }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
@@ -19,6 +20,7 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         super(application);
         repository = new WeatherReadingsRepository(application);
         allWeatherReadings = repository.getAllWeatherReadings();
+
     }
 
     public void insert(WeatherReading weatherReading) {
@@ -53,4 +55,9 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
     public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
         return repository.getInDataLoadingStateObservable();
     }
+
+    public MutableLiveData<Boolean> getDataLoadingFromApiSuccessObservable() {
+        return repository.getDataLoadingFromApiSuccessObservable();
+    }
+
 }

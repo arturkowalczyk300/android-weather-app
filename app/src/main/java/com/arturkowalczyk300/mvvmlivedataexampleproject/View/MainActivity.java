@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<WeatherReading> weatherReadings) {
                 //update RecyclerView
                 adapter.submitList(weatherReadings);
+                adapter.setDataLoadedFromApiFlag(weatherReadingsViewModel.
+                        getDataLoadingFromApiSuccessObservable().getValue());
+                recyclerView.scrollToPosition(0);
             }
         });
 

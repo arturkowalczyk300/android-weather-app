@@ -29,10 +29,19 @@ public class WeatherReadingsRepository {
     private LiveData<List<WeatherReading>> allWeatherReadings;
 
     private MutableLiveData<Boolean> inDataLoadingStateObservable;
+    private MutableLiveData<Boolean> dataLoadingFromApiSuccessObservable;
 
     private static String CITY_NAME = "Wolow";
     private static String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
     private static String UNITS = "metric";
+
+    public static String getRecyclerNormalItemColor() {
+        return RECYCLER_NORMAL_ITEM_COLOR;
+    }
+
+    private static String RECYCLER_NORMAL_ITEM_COLOR = "#0E3C51";
+    private static String RECYCLER_NEW_ITEM_COLOR = "#043901";
+
     private static int MAX_COUNT = 10;
 
     private static final int ERROR_VALUE_INT = -1;
@@ -53,6 +62,7 @@ public class WeatherReadingsRepository {
         WeatherReadingApi api = RetrofitClient.getWeatherReadingApiInstance();
         Call<WeatherReadingFromApi> call;
         inDataLoadingStateObservable = new MutableLiveData<>(false);
+        dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
         inDataLoadingStateObservable.setValue(true);
 
         try {
@@ -77,13 +87,13 @@ public class WeatherReadingsRepository {
 
                     WeatherReading currentWeatherReading = new WeatherReading(readTime, temperature, pressure, humidity);
                     insert(currentWeatherReading);
-
+                    dataLoadingFromApiSuccessObservable.setValue(true);
                 }
 
                 @Override
                 public void onFailure(Call<WeatherReadingFromApi> call, Throwable t) {
                     inDataLoadingStateObservable.setValue(false);
-                    Log.e("ERROR", "Call enqueue failure!, url:"+call.request().url().toString());
+                    Log.e("ERROR", "Call enqueue failure!, url:" + call.request().url().toString());
                 }
             });
 
@@ -149,8 +159,7 @@ public class WeatherReadingsRepository {
         new DeleteWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
     }
 
-    public void deleteExcessWeatherReadings()
-    {
+    public void deleteExcessWeatherReadings() {
         new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(MAX_COUNT);
     }
 
@@ -162,8 +171,7 @@ public class WeatherReadingsRepository {
         return allWeatherReadings;
     }
 
-    public LiveData<Integer> getCount()
-    {
+    public LiveData<Integer> getCount() {
         return weatherDAO.getCount();
     }
 
@@ -210,11 +218,10 @@ public class WeatherReadingsRepository {
         }
     }
 
-    private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void>{
+    private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void> {
         private WeatherDAO weatherDAO;
 
-        private DeleteExcessWeatherReadingsAsyncTask(WeatherDAO weatherDAO)
-        {
+        private DeleteExcessWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
             this.weatherDAO = weatherDAO;
         }
 
@@ -222,7 +229,9 @@ public class WeatherReadingsRepository {
         protected Void doInBackground(Integer... integers) {
             weatherDAO.deleteExcess(integers[0]);
             return null;
-        };
+        }
+
+        ;
     }
 
     private static class DeleteAllWeatherReadingsAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -241,5 +250,12 @@ public class WeatherReadingsRepository {
 
     public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
         return inDataLoadingStateObservable;
+    }
+    public MutableLiveData<Boolean> getDataLoadingFromApiSuccessObservable() {
+        return dataLoadingFromApiSuccessObservable;
+    }
+
+    public static String getRecyclerNewItemColor() {
+        return RECYCLER_NEW_ITEM_COLOR;
     }
 }
