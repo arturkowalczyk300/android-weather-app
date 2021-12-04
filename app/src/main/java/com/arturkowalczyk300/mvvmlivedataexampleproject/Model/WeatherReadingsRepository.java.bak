@@ -23,18 +23,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WeatherReadingsRepository {
-    public static final int MAX_COUNT = 10;
+
 
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
 
-
-
     private MutableLiveData<Boolean> inDataLoadingStateObservable;
 
-    private static final String CITY_NAME = "Wolow";
-    private static final String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
-    private static final String UNITS = "metric";
+    private static String CITY_NAME = "Wolow";
+    private static String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
+    private static String UNITS = "metric";
+    private static int MAX_COUNT = 10;
 
     private static final int ERROR_VALUE_INT = -1;
     private static final float ERROR_VALUE_FLOAT = -1;
@@ -95,6 +94,38 @@ public class WeatherReadingsRepository {
 
 
         return new WeatherReading(readTime, temperature, pressure, humidity);
+    }
+
+    public static String getCityName() {
+        return CITY_NAME;
+    }
+
+    public static void setCityName(String cityName) {
+        CITY_NAME = cityName;
+    }
+
+    public static String getApiKey() {
+        return API_KEY;
+    }
+
+    public static void setApiKey(String apiKey) {
+        API_KEY = apiKey;
+    }
+
+    public static String getUNITS() {
+        return UNITS;
+    }
+
+    public static void setUNITS(String UNITS) {
+        WeatherReadingsRepository.UNITS = UNITS;
+    }
+
+    public static int getMaxCount() {
+        return MAX_COUNT;
+    }
+
+    public static void setMaxCount(int maxCount) {
+        MAX_COUNT = maxCount;
     }
 
     public WeatherReadingsRepository(Application application) {

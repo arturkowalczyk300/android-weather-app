@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Integer integer) {
                 textViewRecordsCount.setText(String.valueOf(integer));
 
-                if(integer.intValue() > WeatherReadingsRepository.MAX_COUNT){
+                if(integer.intValue() > WeatherReadingsRepository.getMaxCount()){
                     weatherReadingsViewModel.deleteExcessWeatherReadings();
                 }
             }
@@ -179,14 +179,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete_all_weather_readings:
+            case R.id.menu_delete_all_weather_readings:
                 weatherReadingsViewModel.deleteAllWeatherReadings();
                 Toast.makeText(this, "All weather readings deleted!", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.delete_excess_weather_readings:
+            case R.id.menu_delete_excess_weather_readings:
                 weatherReadingsViewModel.deleteExcessWeatherReadings();
                 Toast.makeText(this, "Excess records deleted!", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.menu_settings:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+
             default:
                 return super.onOptionsItemSelected(item);
         }
