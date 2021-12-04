@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
@@ -47,5 +48,9 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
 
     public LiveData<Integer> getCount() {
         return repository.getCount();
+    }
+
+    public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
+        return repository.getInDataLoadingStateObservable();
     }
 }

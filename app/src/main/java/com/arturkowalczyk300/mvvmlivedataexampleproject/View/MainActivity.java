@@ -15,11 +15,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingFromApi;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModel;
@@ -53,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         TextView textViewRecordsCount = findViewById(R.id.textView_records_count);
-
-
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -114,8 +113,16 @@ public class MainActivity extends AppCompatActivity {
 
                 if(integer.intValue() > WeatherReadingsRepository.MAX_COUNT){
                     weatherReadingsViewModel.deleteExcessWeatherReadings();
-                    Toast.makeText(getApplicationContext(), "Excess records deleted!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        //observe data loading from API state and bind it with progress bar visibility
+        ProgressBar progressBar = findViewById(R.id.progress_bar_loading);
+        weatherReadingsViewModel.getInDataLoadingStateObservable().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean inLoadingState) {
+                    progressBar.setVisibility(inLoadingState ? View.VISIBLE : View.INVISIBLE );
             }
         });
     }

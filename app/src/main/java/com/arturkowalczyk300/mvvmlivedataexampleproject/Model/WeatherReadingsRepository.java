@@ -5,10 +5,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherDAO;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingFromApi;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.RetrofitClient;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingsDatabase;
@@ -26,6 +27,10 @@ public class WeatherReadingsRepository {
 
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
+
+
+
+    private MutableLiveData<Boolean> inDataLoadingStateObservable;
 
     private static final String CITY_NAME = "Wolow";
     private static final String API_KEY = "to_be_written";
@@ -48,12 +53,17 @@ public class WeatherReadingsRepository {
 
         WeatherReadingApi api = RetrofitClient.getWeatherReadingApiInstance();
         Call<WeatherReadingFromApi> call;
+        inDataLoadingStateObservable = new MutableLiveData<>(false);
+        inDataLoadingStateObservable.setValue(true);
 
         try {
             call = api.getReading(CITY_NAME, API_KEY, UNITS);
             call.enqueue(new Callback<WeatherReadingFromApi>() {
                 @Override
-                public void onResponse(Call<WeatherReadingFromApi> call, Response<WeatherReadingFromApi> response) {
+                public void onResponse(Call<WeatherReadingFromApi> call,
+                                       Response<WeatherReadingFromApi> response) {
+                    inDataLoadingStateObservable.setValue(false);
+
                     if (response.body() == null) {
                         //Toast.makeText(MainActivity.this, "Response body is null", Toast.LENGTH_LONG).show();
                         Log.e("ERROR", "Response body is null!");
@@ -68,16 +78,18 @@ public class WeatherReadingsRepository {
 
                     WeatherReading currentWeatherReading = new WeatherReading(readTime, temperature, pressure, humidity);
                     insert(currentWeatherReading);
+
                 }
 
                 @Override
                 public void onFailure(Call<WeatherReadingFromApi> call, Throwable t) {
-
+                    inDataLoadingStateObservable.setValue(false);
                     Log.e("ERROR", "Call enqueue failure!, url:"+call.request().url().toString());
                 }
             });
 
         } catch (Exception ex) {
+            inDataLoadingStateObservable.setValue(false);
             Log.e("ERROR", ex.toString());
         }
 
@@ -194,5 +206,9 @@ public class WeatherReadingsRepository {
             weatherDAO.deleteAllWeatherReadings();
             return null;
         }
+    }
+
+    public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
+        return inDataLoadingStateObservable;
     }
 }

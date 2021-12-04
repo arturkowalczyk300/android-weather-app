@@ -1,7 +1,5 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi;
 
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingFromApi;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

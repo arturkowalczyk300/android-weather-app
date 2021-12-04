@@ -1,14 +1,6 @@
-
-package com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom;
+package com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi;
 
 import java.util.List;
-
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Coord;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Main;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Clouds;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Wind;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Sys;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.Weather;
 import com.google.gson.annotations.Expose;
 
 @SuppressWarnings("unused")
