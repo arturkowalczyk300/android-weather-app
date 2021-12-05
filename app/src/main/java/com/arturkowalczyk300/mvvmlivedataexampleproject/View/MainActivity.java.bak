@@ -36,9 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     private WeatherReadingsViewModel weatherReadingsViewModel;
 
-    WeatherReadingFromApi weatherReadingFromApi;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 adapter.submitList(weatherReadings);
                 adapter.setDataLoadedFromApiFlag(weatherReadingsViewModel.
                         getDataLoadingFromApiSuccessObservable().getValue());
-                recyclerView.scrollToPosition(0);
             }
         });
 
@@ -86,6 +82,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Weather reading deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        //handle auto-scrolling, when new item will be added (and showed!) to recycler view
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false){
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                super.onLayoutChildren(recycler, state);
+                recyclerView.scrollToPosition(0);
+                //int firstVisibleItemPosition = findFirstVisibleItemPosition();
+            }
+        };
+        recyclerView.setLayoutManager(layoutManager);
 
         //handle click on item
         adapter.setOnItemClickListener(new WeatherReadingAdapter.OnItemClickListener() {
@@ -109,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //set observable for getting rows count
-        weatherReadingsViewModel.getCount().observe(this, new Observer<Integer>(){
+        weatherReadingsViewModel.getCount().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 textViewRecordsCount.setText(String.valueOf(integer));
 
-                if(integer.intValue() > WeatherReadingsRepository.getMaxCount()){
+                if (integer.intValue() > WeatherReadingsRepository.getMaxCount()) {
                     weatherReadingsViewModel.deleteExcessWeatherReadings();
                 }
             }
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         weatherReadingsViewModel.getInDataLoadingStateObservable().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean inLoadingState) {
-                    progressBar.setVisibility(inLoadingState ? View.VISIBLE : View.INVISIBLE );
+                progressBar.setVisibility(inLoadingState ? View.VISIBLE : View.INVISIBLE);
             }
         });
     }
