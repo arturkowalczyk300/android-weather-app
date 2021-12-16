@@ -35,6 +35,7 @@ dependencies {
     def retrofit_version = "2.9.0"
 
     //my dependencies
+    implementation 'com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.2' // Sublime Picker
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version" // ViewModel
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version" // LiveData
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version" // Annotation processor

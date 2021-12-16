@@ -5,27 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingLeft="20dp"
     tools:context=".View.AddEditWeatherReading">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/linear_layout_pickers">
-    <DatePicker
-        android:id="@+id/date_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="6"
-        android:calendarViewShown="true"
-        android:spinnersShown="false"/>
-
-    <TimePicker
-        android:id="@+id/time_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:layout_below="@+id/date_picker" />
+        android:id="@+id/linear_layout_pickers"
+        android:layout_marginBottom="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time and date: "/>
+        <TextView
+            android:id="@+id/textViewReadTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:ems="8"
+            tools:text="07:29 16.12.2021"/>
+        <Button
+            android:id="@+id/buttonEditReadTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"/>
     </LinearLayout>
 
 
@@ -42,7 +47,6 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:layout_below="@+id/linear_layout_pickers"
-        android:layout_toRightOf="@+id/textView_temperature"
         android:layout_marginTop="10dp"/>
 
     <TextView

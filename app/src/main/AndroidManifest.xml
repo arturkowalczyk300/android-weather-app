@@ -12,7 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVMLivedataExampleProject">
-        <activity android:name=".View.SettingsActivity"></activity>
+        <activity
+            android:name=".View.SublimePickerTest"
+            android:exported="false" />
+        <activity android:name=".View.SettingsActivity" />
         <activity
             android:name=".View.AddEditWeatherReading"
             android:parentActivityName=".View.MainActivity" />
