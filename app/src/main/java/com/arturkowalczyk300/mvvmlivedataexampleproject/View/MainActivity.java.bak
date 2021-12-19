@@ -27,6 +27,7 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRep
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.MainPreferencesConstants;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModel;
@@ -39,6 +40,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_WEATHER_READING_REQUEST = 1;
     public static final int EDIT_WEATHER_READING_REQUEST = 2;
+    public static final int SETTINGS_ACTIVITY_REQUEST = 3;
 
     private WeatherReadingsViewModel weatherReadingsViewModel;
 
@@ -127,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Integer integer) {
                 textViewRecordsCount.setText(String.valueOf(integer));
 
-                if (integer.intValue() > WeatherReadingsRepository.getMaxCount()) {
+                if (integer.intValue() > weatherReadingsViewModel.getMaxCount()) {
                     weatherReadingsViewModel.deleteExcessWeatherReadings();
                 }
             }
@@ -137,17 +139,16 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewNoInternetConnection = findViewById(R.id.textView_no_internet_connection);
 
         ConnectionLiveData connectionLiveData = new ConnectionLiveData(getApplicationContext());
-        connectionLiveData.observe(this, new Observer<ConnectionModel>(){
-                    @Override
-                    public void onChanged(ConnectionModel connectionModel) {
-                        if(connectionModel.isConnected()) {
-                            textViewNoInternetConnection.setVisibility(View.GONE);
-                        }
-                        else {
-                            textViewNoInternetConnection.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
+        connectionLiveData.observe(this, new Observer<ConnectionModel>() {
+            @Override
+            public void onChanged(ConnectionModel connectionModel) {
+                if (connectionModel.isConnected()) {
+                    textViewNoInternetConnection.setVisibility(View.GONE);
+                } else {
+                    textViewNoInternetConnection.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
         //observe data loading from API state and bind it with progress bar visibility
@@ -199,7 +200,29 @@ public class MainActivity extends AppCompatActivity {
             weatherReadingsViewModel.update(weatherReading);
 
             Toast.makeText(this, "Weather reading updated!", Toast.LENGTH_SHORT).show();
-        } else Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
+        } else if ((requestCode == ADD_WEATHER_READING_REQUEST || requestCode == EDIT_WEATHER_READING_REQUEST)
+                && resultCode != RESULT_OK) {
+            Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == SETTINGS_ACTIVITY_REQUEST) {
+            try{
+                String apiKey = data.getStringExtra(MainPreferencesConstants.API_KEY);
+                String city = data.getStringExtra(MainPreferencesConstants.CITY);
+                String units = data.getStringExtra(MainPreferencesConstants.UNITS);
+                int maxCount = data.getIntExtra(MainPreferencesConstants.MAX_COUNT, 10);
+
+                weatherReadingsViewModel.setApiKey(apiKey);
+                weatherReadingsViewModel.setCityName(city);
+                weatherReadingsViewModel.setUNITS(units);
+                weatherReadingsViewModel.setMaxCount(maxCount);
+                Toast.makeText(this, "settings updated!",  Toast.LENGTH_SHORT).show();
+            }
+            catch(Exception ex)
+            {
+                Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        Toast.makeText(this, "req=" + String.valueOf(requestCode) + ", res=" + String.valueOf(resultCode), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -222,13 +245,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                //put settings to bundle
+                settingsIntent.putExtra(MainPreferencesConstants.API_KEY, weatherReadingsViewModel.getApiKey());
+                settingsIntent.putExtra(MainPreferencesConstants.CITY, weatherReadingsViewModel.getCityName());
+                settingsIntent.putExtra(MainPreferencesConstants.UNITS, weatherReadingsViewModel.getUnits());
+                settingsIntent.putExtra(MainPreferencesConstants.MAX_COUNT, weatherReadingsViewModel.getMaxCount());
+                startActivityForResult(settingsIntent, SETTINGS_ACTIVITY_REQUEST);
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
 }

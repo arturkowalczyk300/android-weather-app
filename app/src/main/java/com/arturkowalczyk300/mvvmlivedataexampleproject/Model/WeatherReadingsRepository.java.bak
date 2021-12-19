@@ -16,12 +16,11 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingF
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.RetrofitClient;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingsDatabase;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.PreferencesRepository;
 
-import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +28,7 @@ import retrofit2.Response;
 
 public class WeatherReadingsRepository {
 
-
+    private PreferencesRepository preferencesRepository;
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
     private ConnectionLiveData internetConnectionState;
@@ -39,18 +38,12 @@ public class WeatherReadingsRepository {
 
     private boolean internetAvailable = false;
 
-    private static String CITY_NAME = "Wolow";
-    private static String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
-    private static String UNITS = "metric";
-
     public static String getRecyclerNormalItemColor() {
         return RECYCLER_NORMAL_ITEM_COLOR;
     }
 
     private static String RECYCLER_NORMAL_ITEM_COLOR = "#0E3C51";
     private static String RECYCLER_NEW_ITEM_COLOR = "#043901";
-
-    private static int MAX_COUNT = 10;
 
     private static final int ERROR_VALUE_INT = -1;
     private static final float ERROR_VALUE_FLOAT = -1;
@@ -72,7 +65,7 @@ public class WeatherReadingsRepository {
         inDataLoadingStateObservable.setValue(true);
 
         try {
-            call = api.getReading(CITY_NAME, API_KEY, UNITS);
+            call = api.getReading(getCityName(), getApiKey(), getUnits());
             call.enqueue(new Callback<WeatherReadingFromApi>() {
                 @Override
                 public void onResponse(Call<WeatherReadingFromApi> call,
@@ -112,39 +105,42 @@ public class WeatherReadingsRepository {
         return new WeatherReading(readTime, temperature, pressure, humidity);
     }
 
-    public static String getCityName() {
-        return CITY_NAME;
+    public String getCityName() {
+        return preferencesRepository.getCity();
     }
 
-    public static void setCityName(String cityName) {
-        CITY_NAME = cityName;
+    public void setCityName(String cityName) {
+        preferencesRepository.setCity(cityName);
     }
 
-    public static String getApiKey() {
-        return API_KEY;
+    public String getApiKey() {
+        return preferencesRepository.getApiKey();
     }
 
-    public static void setApiKey(String apiKey) {
-        API_KEY = apiKey;
+    public void setApiKey(String apiKey) {
+        preferencesRepository.setApiKey(apiKey);
     }
 
-    public static String getUNITS() {
-        return UNITS;
+    public String getUnits() {
+        return preferencesRepository.getUnits();
     }
 
-    public static void setUNITS(String UNITS) {
-        WeatherReadingsRepository.UNITS = UNITS;
+    public void setUNITS(String units) {
+        preferencesRepository.setUnits(units);
     }
 
-    public static int getMaxCount() {
-        return MAX_COUNT;
+    public int getMaxCount() {
+        return preferencesRepository.getMaxCount();
     }
 
-    public static void setMaxCount(int maxCount) {
-        MAX_COUNT = maxCount;
+    public void setMaxCount(int maxCount) {
+        preferencesRepository.setMaxCount(maxCount);
     }
 
     public WeatherReadingsRepository(Application application) {
+        //init preferences repository
+        preferencesRepository = new PreferencesRepository(application.getApplicationContext());
+
         //observe connection state
         internetConnectionState = new ConnectionLiveData(application);
         internetConnectionState.observeForever (new Observer<ConnectionModel>() {
@@ -178,7 +174,7 @@ public class WeatherReadingsRepository {
     }
 
     public void deleteExcessWeatherReadings() {
-        new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(MAX_COUNT);
+        new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(getMaxCount());
     }
 
     public void deleteAllWeatherReadings() {
