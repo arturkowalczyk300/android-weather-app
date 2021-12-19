@@ -6,7 +6,10 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherDAO;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
@@ -14,9 +17,11 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.RetrofitClient;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReadingsDatabase;
 
+import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,9 +32,12 @@ public class WeatherReadingsRepository {
 
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
+    private ConnectionLiveData internetConnectionState;
 
     private MutableLiveData<Boolean> inDataLoadingStateObservable;
     private MutableLiveData<Boolean> dataLoadingFromApiSuccessObservable;
+
+    private boolean internetAvailable = false;
 
     private static String CITY_NAME = "Wolow";
     private static String API_KEY = "64a5bea1e6991da4b087ee65ef5bf917";
@@ -61,8 +69,6 @@ public class WeatherReadingsRepository {
 
         WeatherReadingApi api = RetrofitClient.getWeatherReadingApiInstance();
         Call<WeatherReadingFromApi> call;
-        inDataLoadingStateObservable = new MutableLiveData<>(false);
-        dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
         inDataLoadingStateObservable.setValue(true);
 
         try {
@@ -93,7 +99,7 @@ public class WeatherReadingsRepository {
                 @Override
                 public void onFailure(Call<WeatherReadingFromApi> call, Throwable t) {
                     inDataLoadingStateObservable.setValue(false);
-                    Log.e("ERROR", "Call enqueue failure!, url:" + call.request().url().toString());
+                    Log.e("ERROR", "Call enqueue failure!, url:" + call.request().url().toString()); //TODO : display there Toast  too
                 }
             });
 
@@ -139,12 +145,24 @@ public class WeatherReadingsRepository {
     }
 
     public WeatherReadingsRepository(Application application) {
+        //observe connection state
+        internetConnectionState = new ConnectionLiveData(application);
+        internetConnectionState.observeForever (new Observer<ConnectionModel>() {
+            @Override
+            public void onChanged(ConnectionModel connectionModel) {
+                internetAvailable = connectionModel.isConnected();
+                if(internetAvailable && !dataLoadingFromApiSuccessObservable.getValue())
+                    getAndInsertWeatherReadingFromApi();
+            }
+        });
+
         //get readings from local database
         WeatherReadingsDatabase database = WeatherReadingsDatabase.getInstance(application);
         weatherDAO = database.weatherDAO();
         allWeatherReadings = weatherDAO.getAllWeatherReadings();
 
-        getAndInsertWeatherReadingFromApi();
+        inDataLoadingStateObservable = new MutableLiveData<>(false);
+        dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
     }
 
     public void insert(WeatherReading weatherReading) {

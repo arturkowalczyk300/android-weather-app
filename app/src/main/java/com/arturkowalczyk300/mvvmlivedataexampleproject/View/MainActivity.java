@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Visibility;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
 import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
@@ -129,6 +132,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //set observable for internet connection state
+        TextView textViewNoInternetConnection = findViewById(R.id.textView_no_internet_connection);
+
+        ConnectionLiveData connectionLiveData = new ConnectionLiveData(getApplicationContext());
+        connectionLiveData.observe(this, new Observer<ConnectionModel>(){
+                    @Override
+                    public void onChanged(ConnectionModel connectionModel) {
+                        if(connectionModel.isConnected()) {
+                            textViewNoInternetConnection.setVisibility(View.GONE);
+                        }
+                        else {
+                            textViewNoInternetConnection.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
 
         //observe data loading from API state and bind it with progress bar visibility
         ProgressBar progressBar = findViewById(R.id.progress_bar_loading);

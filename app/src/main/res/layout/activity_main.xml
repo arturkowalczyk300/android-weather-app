@@ -8,9 +8,27 @@
     tools:context=".View.MainActivity">
 
     <LinearLayout
+        android:id="@+id/linear_layout_messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#83132D"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView_no_internet_connection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="No internet connection!"
+            android:visibility="gone"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linear_layout_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:translationY="20dp"
         android:orientation="horizontal">
 
         <TextView
@@ -34,7 +52,7 @@
         app:layout_anchorGravity="bottom"
         android:layout_gravity="bottom"
         tools:listitem="@layout/weather_reading_item"
-        android:translationY="20dp"/>
+        android:translationY="40dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_weather_reading"
