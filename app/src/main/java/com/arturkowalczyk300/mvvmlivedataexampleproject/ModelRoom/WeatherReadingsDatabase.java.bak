@@ -16,7 +16,7 @@ import java.util.Date;
 import static com.arturkowalczyk300.mvvmlivedataexampleproject.View.AddEditWeatherReading.DATE_START_YEAR;
 
 
-@Database(entities = {WeatherReading.class}, version = 1)
+@Database(entities = {WeatherReading.class}, version = 3)
 @TypeConverters({Converters.class})
 public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase {
     private static WeatherReadingsDatabase instance;
@@ -52,9 +52,9 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
         protected Void doInBackground(Void... voids)
         {
             Date date1 = new Date(2021-DATE_START_YEAR, 8, 6, 20, 11);
-            weatherDAO.insert(new WeatherReading(date1, 20.0f, 1023, 80));
-            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 25.0f, 1030, 75));
-            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 30.0f, 1033, 70));
+            weatherDAO.insert(new WeatherReading(date1, 20.0f, 1023, 80, Units.METRIC));
+            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 25.0f, 1030, 75, Units.METRIC));
+            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 30.0f, 1033, 70, Units.METRIC));
             return null;
         }
     }

@@ -27,6 +27,7 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRep
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.MainPreferencesConstants;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
@@ -173,7 +174,11 @@ public class MainActivity extends AppCompatActivity {
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
 
-            WeatherReading weatherReading = new WeatherReading(readTime, Float.parseFloat(temperatureStr), Integer.parseInt(pressureStr), Integer.parseInt(humidityStr));
+            WeatherReading weatherReading = new WeatherReading(readTime,
+                    Float.parseFloat(temperatureStr),
+                    Integer.parseInt(pressureStr),
+                    Integer.parseInt(humidityStr),
+                    Units.valueOf(weatherReadingsViewModel.getUnits()));
             weatherReadingsViewModel.insert(weatherReading);
 
             Toast.makeText(this, "Weather reading saved!", Toast.LENGTH_SHORT).show();
@@ -195,7 +200,11 @@ public class MainActivity extends AppCompatActivity {
             int pressure = (int) Float.parseFloat(pressureStr);
             int humidity = (int) Float.parseFloat(humidityStr);
 
-            WeatherReading weatherReading = new WeatherReading(readTime, temperature, pressure, humidity);
+            WeatherReading weatherReading = new WeatherReading(readTime,
+                    temperature,
+                    pressure,
+                    humidity,
+                   Units.valueOf(weatherReadingsViewModel.getUnits()));
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 

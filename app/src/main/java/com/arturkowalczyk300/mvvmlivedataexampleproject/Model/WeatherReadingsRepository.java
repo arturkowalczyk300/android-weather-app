@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingApi;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherDAO;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.RetrofitClient;
@@ -21,6 +22,7 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.PreferencesR
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,7 +86,12 @@ public class WeatherReadingsRepository {
                         humidity = response.body().getMain().getHumidity().intValue();
                     }
 
-                    WeatherReading currentWeatherReading = new WeatherReading(readTime, temperature, pressure, humidity);
+                    WeatherReading currentWeatherReading =
+                            new WeatherReading(readTime,
+                                    temperature,
+                                    pressure,
+                                    humidity,
+                                    Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
                     insert(currentWeatherReading);
                     dataLoadingFromApiSuccessObservable.setValue(true);
                 }
@@ -102,7 +109,11 @@ public class WeatherReadingsRepository {
         }
 
 
-        return new WeatherReading(readTime, temperature, pressure, humidity);
+        return new WeatherReading(readTime,
+                temperature,
+                pressure,
+                humidity,
+                Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
     }
 
     public String getCityName() {
@@ -143,11 +154,11 @@ public class WeatherReadingsRepository {
 
         //observe connection state
         internetConnectionState = new ConnectionLiveData(application);
-        internetConnectionState.observeForever (new Observer<ConnectionModel>() {
+        internetConnectionState.observeForever(new Observer<ConnectionModel>() {
             @Override
             public void onChanged(ConnectionModel connectionModel) {
                 internetAvailable = connectionModel.isConnected();
-                if(internetAvailable && !dataLoadingFromApiSuccessObservable.getValue())
+                if (internetAvailable && !dataLoadingFromApiSuccessObservable.getValue())
                     getAndInsertWeatherReadingFromApi();
             }
         });
@@ -265,6 +276,7 @@ public class WeatherReadingsRepository {
     public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
         return inDataLoadingStateObservable;
     }
+
     public MutableLiveData<Boolean> getDataLoadingFromApiSuccessObservable() {
         return dataLoadingFromApiSuccessObservable;
     }

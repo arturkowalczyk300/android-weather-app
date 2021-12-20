@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.View.MainActivity;
@@ -89,6 +90,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
             holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
             holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
+            holder.textViewUnits.setText( currentWeatherReading.getUnit() == Units.METRIC? "°C" : "°F");
         } catch (NullPointerException ex) {
             Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
                     + ", method=" + ex.getStackTrace()[0].getMethodName()
@@ -105,6 +107,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         private TextView textViewTemperature;
         private TextView textViewPressure;
         private TextView textViewHumidity;
+        private TextView textViewUnits;
         private RelativeLayout relativeLayout;
 
         public WeatherReadingHolder(View itemView) {
@@ -113,6 +116,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             textViewTemperature = itemView.findViewById(R.id.textView_temperature);
             textViewPressure = itemView.findViewById(R.id.textView_pressure);
             textViewHumidity = itemView.findViewById(R.id.textView_humidity);
+            textViewUnits = itemView.findViewById(R.id.textView_units);
             relativeLayout = itemView.findViewById(R.id.recycler_relative_layout);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
