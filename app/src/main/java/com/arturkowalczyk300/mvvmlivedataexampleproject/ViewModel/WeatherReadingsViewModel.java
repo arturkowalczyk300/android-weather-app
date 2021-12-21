@@ -1,6 +1,7 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel;
 
 import android.app.Application;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -15,12 +16,20 @@ import java.util.List;
 public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewModel {
     private WeatherReadingsRepository repository;
     private LiveData<List<WeatherReading>> allWeatherReadings;
+    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastError; //[true, "error!"] -> displays error toast with text "error!"
+    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastDefault;
+    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastSuccess;
 
     public WeatherReadingsViewModel(@NonNull Application application) {
         super(application);
         repository = new WeatherReadingsRepository(application);
+        mutableLiveDataToastDefault = new MutableLiveData<>();
+        mutableLiveDataToastSuccess = new MutableLiveData<>();
+        mutableLiveDataToastError = new MutableLiveData<>();
+
         allWeatherReadings = repository.getAllWeatherReadings();
 
+        mutableLiveDataToastDefault.setValue(Pair.create(Boolean.TRUE, "Viewmodel initialized!"));
     }
 
     public void insert(WeatherReading weatherReading) {
@@ -35,8 +44,7 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.delete(weatherReading);
     }
 
-    public void deleteExcessWeatherReadings()
-    {
+    public void deleteExcessWeatherReadings() {
         repository.deleteExcessWeatherReadings();
     }
 
@@ -92,4 +100,16 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.setMaxCount(maxCount);
     }
 
+
+    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastError() {
+        return mutableLiveDataToastError;
+    }
+
+    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastDefault() {
+        return mutableLiveDataToastDefault;
+    }
+
+    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastSuccess() {
+        return mutableLiveDataToastSuccess;
+    }
 }

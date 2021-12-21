@@ -3,7 +3,6 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -11,8 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.transition.Visibility;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,12 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
-import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionLiveData;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.ConnectionModel;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi.WeatherReadingFromApi;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.MainPreferencesConstants;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
@@ -34,6 +30,8 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReading
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.pranavpandey.android.dynamic.toasts.DynamicHint;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.Date;
 import java.util.List;
@@ -92,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
+        //Dynamic toast config
+        DynamicToast.Config.getInstance().
+                setSuccessBackgroundColor(Color.GREEN).
+                setErrorBackgroundColor(Color.RED).
+                apply();
+
         //handle auto-scrolling, when new item will be added (and showed!) to recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false) {
             @Override
@@ -138,6 +142,31 @@ public class MainActivity extends AppCompatActivity {
 
         //set observable for internet connection state
         TextView textViewNoInternetConnection = findViewById(R.id.textView_no_internet_connection);
+
+        //set observables to toasts messages from ViewModel
+        weatherReadingsViewModel.getMutableLiveDataToastDefault().observe(this, new Observer<Pair<Boolean, String>>() {
+            @Override
+            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+                if(booleanStringPair.first.booleanValue())
+                    DynamicToast.make(getApplicationContext(), booleanStringPair.second).show();
+            }
+        });
+
+        weatherReadingsViewModel.getMutableLiveDataToastSuccess().observe(this, new Observer<Pair<Boolean, String>>() {
+            @Override
+            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+                if(booleanStringPair.first.booleanValue())
+                    DynamicToast.makeSuccess(getApplicationContext(), booleanStringPair.second).show();
+            }
+        });
+
+        weatherReadingsViewModel.getMutableLiveDataToastError().observe(this, new Observer<Pair<Boolean, String>>() {
+            @Override
+            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+                if(booleanStringPair.first.booleanValue())
+                    DynamicToast.makeError(getApplicationContext(), booleanStringPair.second).show();
+            }
+        });
 
         ConnectionLiveData connectionLiveData = new ConnectionLiveData(getApplicationContext());
         connectionLiveData.observe(this, new Observer<ConnectionModel>() {
@@ -204,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     temperature,
                     pressure,
                     humidity,
-                   Units.valueOf(weatherReadingsViewModel.getUnits()));
+                    Units.valueOf(weatherReadingsViewModel.getUnits()));
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 
@@ -213,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 && resultCode != RESULT_OK) {
             Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == SETTINGS_ACTIVITY_REQUEST) {
-            try{
+            try {
                 String apiKey = data.getStringExtra(MainPreferencesConstants.API_KEY);
                 String city = data.getStringExtra(MainPreferencesConstants.CITY);
                 String units = data.getStringExtra(MainPreferencesConstants.UNITS);
@@ -223,10 +252,8 @@ public class MainActivity extends AppCompatActivity {
                 weatherReadingsViewModel.setCityName(city);
                 weatherReadingsViewModel.setUNITS(units);
                 weatherReadingsViewModel.setMaxCount(maxCount);
-                Toast.makeText(this, "settings updated!",  Toast.LENGTH_SHORT).show();
-            }
-            catch(Exception ex)
-            {
+                Toast.makeText(this, "settings updated!", Toast.LENGTH_SHORT).show();
+            } catch (Exception ex) {
                 Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
             }
 
@@ -260,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                 settingsIntent.putExtra(MainPreferencesConstants.UNITS, weatherReadingsViewModel.getUnits());
                 settingsIntent.putExtra(MainPreferencesConstants.MAX_COUNT, weatherReadingsViewModel.getMaxCount());
                 startActivityForResult(settingsIntent, SETTINGS_ACTIVITY_REQUEST);
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
