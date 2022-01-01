@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         weatherReadingsViewModel.getMutableLiveDataToastDefault().observe(this, new Observer<Pair<Boolean, String>>() {
             @Override
             public void onChanged(Pair<Boolean, String> booleanStringPair) {
-                if(booleanStringPair.first.booleanValue())
+                if(booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
                     DynamicToast.make(getApplicationContext(), booleanStringPair.second).show();
             }
         });
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         weatherReadingsViewModel.getMutableLiveDataToastSuccess().observe(this, new Observer<Pair<Boolean, String>>() {
             @Override
             public void onChanged(Pair<Boolean, String> booleanStringPair) {
-                if(booleanStringPair.first.booleanValue())
+                if(booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
                     DynamicToast.makeSuccess(getApplicationContext(), booleanStringPair.second).show();
             }
         });
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         weatherReadingsViewModel.getMutableLiveDataToastError().observe(this, new Observer<Pair<Boolean, String>>() {
             @Override
             public void onChanged(Pair<Boolean, String> booleanStringPair) {
-                if(booleanStringPair.first.booleanValue())
+                if(booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
                     DynamicToast.makeError(getApplicationContext(), booleanStringPair.second).show();
             }
         });
@@ -247,11 +247,14 @@ public class MainActivity extends AppCompatActivity {
                 String city = data.getStringExtra(MainPreferencesConstants.CITY);
                 String units = data.getStringExtra(MainPreferencesConstants.UNITS);
                 int maxCount = data.getIntExtra(MainPreferencesConstants.MAX_COUNT, 10);
+                boolean displayDebugToasts = data.getBooleanExtra(
+                        MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, false);
 
                 weatherReadingsViewModel.setApiKey(apiKey);
                 weatherReadingsViewModel.setCityName(city);
                 weatherReadingsViewModel.setUNITS(units);
                 weatherReadingsViewModel.setMaxCount(maxCount);
+                weatherReadingsViewModel.setDisplayDebugToasts(displayDebugToasts);
                 Toast.makeText(this, "settings updated!", Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
@@ -286,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 settingsIntent.putExtra(MainPreferencesConstants.CITY, weatherReadingsViewModel.getCityName());
                 settingsIntent.putExtra(MainPreferencesConstants.UNITS, weatherReadingsViewModel.getUnits());
                 settingsIntent.putExtra(MainPreferencesConstants.MAX_COUNT, weatherReadingsViewModel.getMaxCount());
+                settingsIntent.putExtra(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, weatherReadingsViewModel.getDisplayDebugToasts());
                 startActivityForResult(settingsIntent, SETTINGS_ACTIVITY_REQUEST);
                 return true;
             default:

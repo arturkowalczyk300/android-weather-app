@@ -3,6 +3,7 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject.Model;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -33,18 +34,23 @@ public class WeatherReadingsRepository {
     private PreferencesRepository preferencesRepository;
     private WeatherDAO weatherDAO;
     private LiveData<List<WeatherReading>> allWeatherReadings;
+
+    private MutableLiveData<Boolean> getReadingFromApiCorrectResponse;
+    private MutableLiveData<Boolean> getReadingFromApiBadResponse;
+    private MutableLiveData<Pair<Boolean, String>> getReadingFromApiFailure;
+    private MutableLiveData<Boolean> getReadingFromApiExceptionThrown;
     private ConnectionLiveData internetConnectionState;
 
     private MutableLiveData<Boolean> inDataLoadingStateObservable;
     private MutableLiveData<Boolean> dataLoadingFromApiSuccessObservable;
 
     private boolean internetAvailable = false;
-
     public static String getRecyclerNormalItemColor() {
         return RECYCLER_NORMAL_ITEM_COLOR;
     }
 
     private static String RECYCLER_NORMAL_ITEM_COLOR = "#0E3C51";
+
     private static String RECYCLER_NEW_ITEM_COLOR = "#043901";
 
     private static final int ERROR_VALUE_INT = -1;
@@ -52,9 +58,9 @@ public class WeatherReadingsRepository {
 
     private Date readTime;
     private float temperature;
+
     private int pressure;
     private int humidity;
-
     private WeatherReading getAndInsertWeatherReadingFromApi() {
         readTime = Calendar.getInstance().getTime();
         temperature = ERROR_VALUE_FLOAT;
@@ -77,6 +83,7 @@ public class WeatherReadingsRepository {
                     if (response.body() == null) {
                         //Toast.makeText(MainActivity.this, "Response body is null", Toast.LENGTH_LONG).show();
                         Log.e("ERROR", "Response body is null!");
+                        getReadingFromApiBadResponse.setValue(Boolean.TRUE);
                         return;
                     }
 
@@ -84,6 +91,8 @@ public class WeatherReadingsRepository {
                         temperature = response.body().getMain().getTemp().floatValue();
                         pressure = response.body().getMain().getPressure().intValue(); // TODO: make conversion safe for sure ; https://stackoverflow.com/questions/42983242/idiomatic-way-of-converting-from-long-object-to-long-primitive-safely-in-java
                         humidity = response.body().getMain().getHumidity().intValue();
+
+                        getReadingFromApiCorrectResponse.setValue(Boolean.TRUE);
                     }
 
                     WeatherReading currentWeatherReading =
@@ -93,6 +102,7 @@ public class WeatherReadingsRepository {
                                     humidity,
                                     Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
                     insert(currentWeatherReading);
+
                     dataLoadingFromApiSuccessObservable.setValue(true);
                 }
 
@@ -100,12 +110,14 @@ public class WeatherReadingsRepository {
                 public void onFailure(Call<WeatherReadingFromApi> call, Throwable t) {
                     inDataLoadingStateObservable.setValue(false);
                     Log.e("ERROR", "Call enqueue failure!, url:" + call.request().url().toString()); //TODO : display there Toast  too
+                    getReadingFromApiFailure.setValue(Pair.create(Boolean.TRUE, t.getMessage().toString()));
                 }
             });
 
         } catch (Exception ex) {
             inDataLoadingStateObservable.setValue(false);
             Log.e("ERROR", ex.toString());
+            getReadingFromApiExceptionThrown.setValue(Boolean.TRUE);
         }
 
 
@@ -114,6 +126,174 @@ public class WeatherReadingsRepository {
                 pressure,
                 humidity,
                 Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
+    }
+
+    public WeatherReadingsRepository(Application application) {
+        //init preferences repository
+        preferencesRepository = new PreferencesRepository(application.getApplicationContext());
+
+        //observe connection state
+        internetConnectionState = new ConnectionLiveData(application);
+        internetConnectionState.observeForever(new Observer<ConnectionModel>() {
+            @Override
+            public void onChanged(ConnectionModel connectionModel) {
+                internetAvailable = connectionModel.isConnected();
+                if (internetAvailable && !dataLoadingFromApiSuccessObservable.getValue())
+                    getAndInsertWeatherReadingFromApi();
+            }
+        });
+
+        //get readings from local database
+        WeatherReadingsDatabase database = WeatherReadingsDatabase.getInstance(application);
+        weatherDAO = database.weatherDAO();
+        allWeatherReadings = weatherDAO.getAllWeatherReadings();
+
+        //livedata variables init
+        getReadingFromApiCorrectResponse = new MutableLiveData<Boolean>();
+        getReadingFromApiBadResponse = new MutableLiveData<Boolean>();
+        getReadingFromApiFailure = new MutableLiveData<Pair<Boolean, String>>();
+        getReadingFromApiExceptionThrown = new MutableLiveData<Boolean>();
+        inDataLoadingStateObservable = new MutableLiveData<>(false);
+        dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
+    }
+
+    public void insert(WeatherReading weatherReading) {
+        new InsertWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
+    }
+
+    public void update(WeatherReading weatherReading) {
+        new UpdateWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
+    }
+
+    public void delete(WeatherReading weatherReading) {
+        new DeleteWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
+    }
+
+    public void deleteExcessWeatherReadings() {
+        new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(getMaxCount());
+    }
+
+    public void deleteAllWeatherReadings() {
+        new DeleteAllWeatherReadingsAsyncTask(weatherDAO).execute();
+    }
+
+    public LiveData<List<WeatherReading>> getAllWeatherReadings() {
+        return allWeatherReadings;
+    }
+
+    public LiveData<Integer> getCount() {
+        return weatherDAO.getCount();
+    }
+
+    private static class InsertWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
+
+        private WeatherDAO weatherDAO;
+
+        private InsertWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(WeatherReading... weatherReadings) {
+            weatherDAO.insert(weatherReadings[0]);
+            return null;
+        }
+
+
+
+    }
+    private static class UpdateWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
+
+        private WeatherDAO weatherDAO;
+        private UpdateWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(WeatherReading... weatherReadings) {
+            weatherDAO.update(weatherReadings[0]);
+            return null;
+        }
+
+
+
+    }
+    private static class DeleteWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
+
+        private WeatherDAO weatherDAO;
+        private DeleteWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(WeatherReading... weatherReadings) {
+            weatherDAO.delete(weatherReadings[0]); //delete given object
+            return null;
+        }
+
+
+
+    }
+    private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void> {
+        private WeatherDAO weatherDAO;
+
+        private DeleteExcessWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            weatherDAO.deleteExcess(integers[0]);
+            return null;
+        }
+
+        ;
+
+
+
+    }
+    private static class DeleteAllWeatherReadingsAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private WeatherDAO weatherDAO;
+        private DeleteAllWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
+            this.weatherDAO = weatherDAO;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            weatherDAO.deleteAllWeatherReadings();
+            return null;
+        }
+
+
+
+    }
+    public static String getRecyclerNewItemColor() {
+        return RECYCLER_NEW_ITEM_COLOR;
+    }
+
+    public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
+        return inDataLoadingStateObservable;
+    }
+
+    public MutableLiveData<Boolean> getDataLoadingFromApiSuccessObservable() {
+        return dataLoadingFromApiSuccessObservable;
+    }
+
+    public LiveData<Boolean> getGetReadingFromApiCorrectResponse() {
+        return getReadingFromApiCorrectResponse;
+    }
+
+    public MutableLiveData<Boolean> getGetReadingFromApiBadResponse() {
+        return getReadingFromApiBadResponse;
+    }
+
+    public LiveData<Pair<Boolean, String>> getGetReadingFromApiFailure() {
+        return getReadingFromApiFailure;
+    }
+
+    public LiveData<Boolean> getGetReadingFromApiExceptionThrown() {
+        return getReadingFromApiExceptionThrown;
     }
 
     public String getCityName() {
@@ -148,140 +328,13 @@ public class WeatherReadingsRepository {
         preferencesRepository.setMaxCount(maxCount);
     }
 
-    public WeatherReadingsRepository(Application application) {
-        //init preferences repository
-        preferencesRepository = new PreferencesRepository(application.getApplicationContext());
-
-        //observe connection state
-        internetConnectionState = new ConnectionLiveData(application);
-        internetConnectionState.observeForever(new Observer<ConnectionModel>() {
-            @Override
-            public void onChanged(ConnectionModel connectionModel) {
-                internetAvailable = connectionModel.isConnected();
-                if (internetAvailable && !dataLoadingFromApiSuccessObservable.getValue())
-                    getAndInsertWeatherReadingFromApi();
-            }
-        });
-
-        //get readings from local database
-        WeatherReadingsDatabase database = WeatherReadingsDatabase.getInstance(application);
-        weatherDAO = database.weatherDAO();
-        allWeatherReadings = weatherDAO.getAllWeatherReadings();
-
-        inDataLoadingStateObservable = new MutableLiveData<>(false);
-        dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
+    public boolean getDisplayDebugToasts()
+    {
+        return preferencesRepository.getDisplayDebugToasts();
     }
 
-    public void insert(WeatherReading weatherReading) {
-        new InsertWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
-    }
-
-    public void update(WeatherReading weatherReading) {
-        new UpdateWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
-    }
-
-    public void delete(WeatherReading weatherReading) {
-        new DeleteWeatherReadingAsyncTask(weatherDAO).execute(weatherReading);
-    }
-
-    public void deleteExcessWeatherReadings() {
-        new DeleteExcessWeatherReadingsAsyncTask(weatherDAO).execute(getMaxCount());
-    }
-
-    public void deleteAllWeatherReadings() {
-        new DeleteAllWeatherReadingsAsyncTask(weatherDAO).execute();
-    }
-
-    public LiveData<List<WeatherReading>> getAllWeatherReadings() {
-        return allWeatherReadings;
-    }
-
-    public LiveData<Integer> getCount() {
-        return weatherDAO.getCount();
-    }
-
-    private static class InsertWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
-        private WeatherDAO weatherDAO;
-
-        private InsertWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
-            this.weatherDAO = weatherDAO;
-        }
-
-        @Override
-        protected Void doInBackground(WeatherReading... weatherReadings) {
-            weatherDAO.insert(weatherReadings[0]);
-            return null;
-        }
-
-    }
-
-    private static class UpdateWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
-        private WeatherDAO weatherDAO;
-
-        private UpdateWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
-            this.weatherDAO = weatherDAO;
-        }
-
-        @Override
-        protected Void doInBackground(WeatherReading... weatherReadings) {
-            weatherDAO.update(weatherReadings[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
-        private WeatherDAO weatherDAO;
-
-        private DeleteWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
-            this.weatherDAO = weatherDAO;
-        }
-
-        @Override
-        protected Void doInBackground(WeatherReading... weatherReadings) {
-            weatherDAO.delete(weatherReadings[0]); //delete given object
-            return null;
-        }
-    }
-
-    private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void> {
-        private WeatherDAO weatherDAO;
-
-        private DeleteExcessWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
-            this.weatherDAO = weatherDAO;
-        }
-
-        @Override
-        protected Void doInBackground(Integer... integers) {
-            weatherDAO.deleteExcess(integers[0]);
-            return null;
-        }
-
-        ;
-    }
-
-    private static class DeleteAllWeatherReadingsAsyncTask extends AsyncTask<Void, Void, Void> {
-        private WeatherDAO weatherDAO;
-
-        private DeleteAllWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
-            this.weatherDAO = weatherDAO;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            weatherDAO.deleteAllWeatherReadings();
-            return null;
-        }
-    }
-
-    public MutableLiveData<Boolean> getInDataLoadingStateObservable() {
-        return inDataLoadingStateObservable;
-    }
-
-    public MutableLiveData<Boolean> getDataLoadingFromApiSuccessObservable() {
-        return dataLoadingFromApiSuccessObservable;
-    }
-
-    public static String getRecyclerNewItemColor() {
-        return RECYCLER_NEW_ITEM_COLOR;
+    public void setDisplayDebugToasts(boolean displayDebugToasts)
+    {
+        preferencesRepository.setDisplayDebugToasts(displayDebugToasts);
     }
 }

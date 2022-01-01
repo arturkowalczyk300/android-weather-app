@@ -13,7 +13,7 @@
         android:layout_marginTop="40dp"
         android:hint="City">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_city"
+            android:id="@+id/settings_textInput_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -24,7 +24,7 @@
         android:layout_marginTop="40dp"
         android:hint="API key">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_api_key"
+            android:id="@+id/settings_textInput_api_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -35,7 +35,7 @@
         android:layout_marginTop="40dp"
         android:hint="Max records">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_max_records"
+            android:id="@+id/settings_textInput_max_records"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -46,13 +46,27 @@
         android:layout_marginTop="40dp"
         android:hint="Units">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_units"
+            android:id="@+id/settings_textInput_units"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Display debug toasts"/>
+        <Switch
+            android:id="@+id/settings_switch_display_debug_toasts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 <Button
-    android:id="@+id/button_settings_save"
+    android:id="@+id/settings_button_save"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:text="Save"/>
 </LinearLayout>

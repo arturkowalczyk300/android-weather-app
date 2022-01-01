@@ -48,4 +48,15 @@ public class PreferencesRepository {
         editor.apply();
     }
 
+    public boolean getDisplayDebugToasts()
+    {
+        return sharedPreferences.getBoolean(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, false);
+    }
+
+    public void setDisplayDebugToasts(boolean displayDebugToasts)
+    {
+        editor.putBoolean(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, displayDebugToasts);
+        editor.apply();
+    }
+
 }

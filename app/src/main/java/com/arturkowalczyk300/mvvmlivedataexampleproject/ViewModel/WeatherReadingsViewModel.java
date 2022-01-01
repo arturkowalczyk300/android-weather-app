@@ -29,7 +29,33 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
 
         allWeatherReadings = repository.getAllWeatherReadings();
 
-        mutableLiveDataToastDefault.setValue(Pair.create(Boolean.TRUE, "Viewmodel initialized!"));
+        //set observables to display toasts with results of Repository working
+        repository.getGetReadingFromApiCorrectResponse().observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mutableLiveDataToastSuccess.setValue(Pair.create(Boolean.TRUE, "Correct API response!"));
+            }
+        });
+
+        repository.getGetReadingFromApiBadResponse().observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Bad API response!"));
+            }
+        });
+
+        repository.getGetReadingFromApiFailure().observeForever(new Observer<Pair<Boolean, String>>() {
+            @Override
+            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "API read failure:, "+booleanStringPair));
+            }
+        });
+        repository.getGetReadingFromApiExceptionThrown().observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Exception thrown when try to get API response!"));
+            }
+        });
     }
 
     public void insert(WeatherReading weatherReading) {
@@ -100,6 +126,15 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.setMaxCount(maxCount);
     }
 
+    public boolean getDisplayDebugToasts()
+    {
+        return repository.getDisplayDebugToasts();
+    }
+
+    public void setDisplayDebugToasts(boolean displayDebugToasts)
+    {
+        repository.setDisplayDebugToasts(displayDebugToasts);
+    }
 
     public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastError() {
         return mutableLiveDataToastError;

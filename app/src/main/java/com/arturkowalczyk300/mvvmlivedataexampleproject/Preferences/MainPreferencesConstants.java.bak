@@ -9,4 +9,5 @@ public class MainPreferencesConstants extends Application {
     public static final String CITY = "city";
     public static final String UNITS = "units";
     public static final String MAX_COUNT = "maxCount";
+    public static final String DISPLAY_DEBUG_TOASTS = "displayDebugToasts";
 }
