@@ -27,6 +27,8 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         mutableLiveDataToastSuccess = new MutableLiveData<>();
         mutableLiveDataToastError = new MutableLiveData<>();
 
+        
+
         allWeatherReadings = repository.getAllWeatherReadings();
 
         //set observables to display toasts with results of Repository working

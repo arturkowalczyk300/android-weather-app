@@ -45,6 +45,8 @@ public class ConnectionLiveData extends LiveData<ConnectionModel> {
                         case ConnectivityManager.TYPE_WIFI:
                             postValue(new ConnectionModel(ConnectionModel.WifiData, true));
                             break;
+                        case ConnectivityManager.TYPE_MOBILE_DUN:
+                        case ConnectivityManager.TYPE_MOBILE_HIPRI: //e.g. for Xiaomi
                         case ConnectivityManager.TYPE_MOBILE:
                             postValue(new ConnectionModel(ConnectionModel.MobileData, true));
                             break;
