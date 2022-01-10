@@ -7,18 +7,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Preferences.MainPreferencesConstants;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
+
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
     EditText editTextCityName;
     EditText editTextApiKey;
-    EditText editTextUnits;
     EditText editTextMaxCount;
     Button buttonSave;
+    RadioGroup radioGroupUnits;
+    RadioButton radioButtonUnitsMetric;
+    RadioButton radioButtonUnitsImperial;
     Switch switchDisplayDebugToasts;
 
     @Override
@@ -28,13 +35,14 @@ public class SettingsActivity extends AppCompatActivity {
         //get stored settings from bundle
 
 
-
         //get bindings to views
         editTextCityName = findViewById(R.id.settings_textInput_city);
         editTextApiKey = findViewById(R.id.settings_textInput_api_key);
-        editTextUnits = findViewById(R.id.settings_textInput_units);
         editTextMaxCount = findViewById(R.id.settings_textInput_max_records);
         switchDisplayDebugToasts = findViewById(R.id.settings_switch_display_debug_toasts);
+        radioGroupUnits = findViewById(R.id.settings_radio_group_units);
+        radioButtonUnitsMetric = findViewById(R.id.settings_radio_button_units_metric);
+        radioButtonUnitsImperial = findViewById(R.id.settings_radio_button_units_imperial);
         buttonSave = findViewById(R.id.settings_button_save);
 
         //fill layout views with values
@@ -46,14 +54,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         editTextCityName.setText(cityName);
         editTextApiKey.setText(apiKey);
-        editTextUnits.setText(units);
+        setCheckedUnitsRadioButtons(units);
         editTextMaxCount.setText(String.valueOf(maxCount));
         switchDisplayDebugToasts.setChecked(displayDebugToasts);
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               saveSettings();
+                saveSettings();
             }
         });
 
@@ -69,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveSettings() {
         String apiKey = editTextApiKey.getText().toString();
         String city = editTextCityName.getText().toString();
-        String units = editTextUnits.getText().toString();
+        String units = getSelectedUnits();
         int maxCount = Integer.parseInt(editTextMaxCount.getText().toString());
         boolean displayDebugToasts = switchDisplayDebugToasts.isChecked();
 
@@ -88,5 +96,21 @@ public class SettingsActivity extends AppCompatActivity {
         WeatherReadingsRepository.setMaxCount(Integer.
                 parseInt(editTextMaxCount.
                         getText().toString()));*/
+    }
+
+    private String getSelectedUnits() {
+        if (radioGroupUnits.getCheckedRadioButtonId() == radioButtonUnitsMetric.getId())
+            return Units.METRIC.toString();
+        else if (radioGroupUnits.getCheckedRadioButtonId() == radioButtonUnitsImperial.getId())
+            return Units.IMPERIAL.toString();
+        else
+            return Units.UNDEFINED.toString();
+    }
+
+    private void setCheckedUnitsRadioButtons(String units) {
+        radioButtonUnitsMetric.setChecked(units.toUpperCase(Locale.ROOT)
+                .equals(Units.METRIC.toString()));
+        radioButtonUnitsImperial.setChecked(units.toUpperCase(Locale.ROOT)
+                .equals(Units.IMPERIAL.toString()));
     }
 }

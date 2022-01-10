@@ -35,8 +35,8 @@ dependencies {
     def retrofit_version = "2.9.0"
 
     //my dependencies
-    //implementation 'androidx.annotation:annotation:1.1.0' //annotations (like NonNull)
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation("com.squareup.okhttp3:okhttp:4.9.0") //okhhtp
+    implementation 'org.jetbrains:annotations:16.0.2' //java annotations
     implementation 'com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.2' // Sublime Picker
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version" // ViewModel
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version" // LiveData

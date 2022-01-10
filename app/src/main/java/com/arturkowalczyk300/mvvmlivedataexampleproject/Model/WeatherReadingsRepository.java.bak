@@ -36,7 +36,7 @@ public class WeatherReadingsRepository {
     private LiveData<List<WeatherReading>> allWeatherReadings;
 
     private MutableLiveData<Boolean> getReadingFromApiCorrectResponse;
-    private MutableLiveData<Boolean> getReadingFromApiBadResponse;
+    private MutableLiveData<Boolean> getReadingFromApiNullBodyResponse;
     private MutableLiveData<Pair<Boolean, String>> getReadingFromApiFailure;
     private MutableLiveData<Boolean> getReadingFromApiExceptionThrown;
     private ConnectionLiveData internetConnectionState;
@@ -45,6 +45,7 @@ public class WeatherReadingsRepository {
     private MutableLiveData<Boolean> dataLoadingFromApiSuccessObservable;
 
     private boolean internetAvailable = false;
+
     public static String getRecyclerNormalItemColor() {
         return RECYCLER_NORMAL_ITEM_COLOR;
     }
@@ -61,16 +62,18 @@ public class WeatherReadingsRepository {
 
     private int pressure;
     private int humidity;
+
     private WeatherReading getAndInsertWeatherReadingFromApi() {
         readTime = Calendar.getInstance().getTime();
         temperature = ERROR_VALUE_FLOAT;
         pressure = ERROR_VALUE_INT;
         humidity = ERROR_VALUE_INT;
-
+        Units returnUnit = Units.UNDEFINED; //default value
 
         WeatherReadingApi api = RetrofitClient.getWeatherReadingApiInstance();
         Call<WeatherReadingFromApi> call;
         inDataLoadingStateObservable.setValue(true);
+
 
         try {
             call = api.getReading(getCityName(), getApiKey(), getUnits());
@@ -83,7 +86,7 @@ public class WeatherReadingsRepository {
                     if (response.body() == null) {
                         //Toast.makeText(MainActivity.this, "Response body is null", Toast.LENGTH_LONG).show();
                         Log.e("ERROR", "Response body is null!");
-                        getReadingFromApiBadResponse.setValue(Boolean.TRUE);
+                        getReadingFromApiNullBodyResponse.setValue(Boolean.TRUE);
                         return;
                     }
 
@@ -95,12 +98,19 @@ public class WeatherReadingsRepository {
                         getReadingFromApiCorrectResponse.setValue(Boolean.TRUE);
                     }
 
+                    Units returnUnit = Units.UNDEFINED; //default value
+                    try {
+                        returnUnit = Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT));
+                    } catch (IllegalArgumentException ex) {
+                        Log.e("", ex.toString());
+                    }
+
                     WeatherReading currentWeatherReading =
                             new WeatherReading(readTime,
                                     temperature,
                                     pressure,
                                     humidity,
-                                    Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
+                                    returnUnit);
                     insert(currentWeatherReading);
 
                     dataLoadingFromApiSuccessObservable.setValue(true);
@@ -109,8 +119,10 @@ public class WeatherReadingsRepository {
                 @Override
                 public void onFailure(Call<WeatherReadingFromApi> call, Throwable t) {
                     inDataLoadingStateObservable.setValue(false);
-                    Log.e("ERROR", "Call enqueue failure!, url:" + call.request().url().toString()); //TODO : display there Toast  too
-                    getReadingFromApiFailure.setValue(Pair.create(Boolean.TRUE, t.getMessage().toString()));
+                    Log.e("ERROR", "Call enqueue failure!, "
+                            + t.getClass().toString());
+                    getReadingFromApiFailure.setValue(Pair.create(Boolean.TRUE,
+                            t.getClass().toString()+", "+t.getMessage().toString()));
                 }
             });
 
@@ -120,12 +132,17 @@ public class WeatherReadingsRepository {
             getReadingFromApiExceptionThrown.setValue(Boolean.TRUE);
         }
 
+        try {
+            returnUnit = Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            Log.e("", ex.toString());
+        }
 
         return new WeatherReading(readTime,
                 temperature,
                 pressure,
                 humidity,
-                Units.valueOf(preferencesRepository.getUnits().toUpperCase(Locale.ROOT)));
+                returnUnit);
     }
 
     public WeatherReadingsRepository(Application application) {
@@ -150,7 +167,7 @@ public class WeatherReadingsRepository {
 
         //livedata variables init
         getReadingFromApiCorrectResponse = new MutableLiveData<Boolean>();
-        getReadingFromApiBadResponse = new MutableLiveData<Boolean>();
+        getReadingFromApiNullBodyResponse = new MutableLiveData<Boolean>();
         getReadingFromApiFailure = new MutableLiveData<Pair<Boolean, String>>();
         getReadingFromApiExceptionThrown = new MutableLiveData<Boolean>();
         inDataLoadingStateObservable = new MutableLiveData<>(false);
@@ -200,11 +217,12 @@ public class WeatherReadingsRepository {
         }
 
 
-
     }
+
     private static class UpdateWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
 
         private WeatherDAO weatherDAO;
+
         private UpdateWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
             this.weatherDAO = weatherDAO;
         }
@@ -216,11 +234,12 @@ public class WeatherReadingsRepository {
         }
 
 
-
     }
+
     private static class DeleteWeatherReadingAsyncTask extends AsyncTask<WeatherReading, Void, Void> {
 
         private WeatherDAO weatherDAO;
+
         private DeleteWeatherReadingAsyncTask(WeatherDAO weatherDAO) {
             this.weatherDAO = weatherDAO;
         }
@@ -232,8 +251,8 @@ public class WeatherReadingsRepository {
         }
 
 
-
     }
+
     private static class DeleteExcessWeatherReadingsAsyncTask extends AsyncTask<Integer, Void, Void> {
         private WeatherDAO weatherDAO;
 
@@ -250,11 +269,12 @@ public class WeatherReadingsRepository {
         ;
 
 
-
     }
+
     private static class DeleteAllWeatherReadingsAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private WeatherDAO weatherDAO;
+
         private DeleteAllWeatherReadingsAsyncTask(WeatherDAO weatherDAO) {
             this.weatherDAO = weatherDAO;
         }
@@ -266,8 +286,8 @@ public class WeatherReadingsRepository {
         }
 
 
-
     }
+
     public static String getRecyclerNewItemColor() {
         return RECYCLER_NEW_ITEM_COLOR;
     }
@@ -284,8 +304,8 @@ public class WeatherReadingsRepository {
         return getReadingFromApiCorrectResponse;
     }
 
-    public MutableLiveData<Boolean> getGetReadingFromApiBadResponse() {
-        return getReadingFromApiBadResponse;
+    public MutableLiveData<Boolean> getGetReadingFromApiNullBodyResponse() {
+        return getReadingFromApiNullBodyResponse;
     }
 
     public LiveData<Pair<Boolean, String>> getGetReadingFromApiFailure() {
@@ -328,13 +348,11 @@ public class WeatherReadingsRepository {
         preferencesRepository.setMaxCount(maxCount);
     }
 
-    public boolean getDisplayDebugToasts()
-    {
+    public boolean getDisplayDebugToasts() {
         return preferencesRepository.getDisplayDebugToasts();
     }
 
-    public void setDisplayDebugToasts(boolean displayDebugToasts)
-    {
+    public void setDisplayDebugToasts(boolean displayDebugToasts) {
         preferencesRepository.setDisplayDebugToasts(displayDebugToasts);
     }
 }

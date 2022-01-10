@@ -39,10 +39,10 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
             }
         });
 
-        repository.getGetReadingFromApiBadResponse().observeForever(new Observer<Boolean>() {
+        repository.getGetReadingFromApiNullBodyResponse().observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Bad API response!"));
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Null body API response!"));
             }
         });
 
