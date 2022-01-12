@@ -243,14 +243,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == SETTINGS_ACTIVITY_REQUEST) {
             try {
-                String apiKey = data.getStringExtra(MainPreferencesConstants.API_KEY);
                 String city = data.getStringExtra(MainPreferencesConstants.CITY);
                 String units = data.getStringExtra(MainPreferencesConstants.UNITS);
                 int maxCount = data.getIntExtra(MainPreferencesConstants.MAX_COUNT, 10);
                 boolean displayDebugToasts = data.getBooleanExtra(
                         MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, false);
 
-                weatherReadingsViewModel.setApiKey(apiKey);
                 weatherReadingsViewModel.setCityName(city);
                 weatherReadingsViewModel.setUNITS(units);
                 weatherReadingsViewModel.setMaxCount(maxCount);
@@ -285,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 //put settings to bundle
-                settingsIntent.putExtra(MainPreferencesConstants.API_KEY, weatherReadingsViewModel.getApiKey());
                 settingsIntent.putExtra(MainPreferencesConstants.CITY, weatherReadingsViewModel.getCityName());
                 settingsIntent.putExtra(MainPreferencesConstants.UNITS, weatherReadingsViewModel.getUnits());
                 settingsIntent.putExtra(MainPreferencesConstants.MAX_COUNT, weatherReadingsViewModel.getMaxCount());

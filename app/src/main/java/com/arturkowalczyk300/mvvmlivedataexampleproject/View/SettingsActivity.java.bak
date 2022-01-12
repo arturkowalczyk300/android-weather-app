@@ -20,7 +20,6 @@ import java.util.Locale;
 public class SettingsActivity extends AppCompatActivity {
 
     EditText editTextCityName;
-    EditText editTextApiKey;
     EditText editTextMaxCount;
     Button buttonSave;
     RadioGroup radioGroupUnits;
@@ -37,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         //get bindings to views
         editTextCityName = findViewById(R.id.settings_textInput_city);
-        editTextApiKey = findViewById(R.id.settings_textInput_api_key);
         editTextMaxCount = findViewById(R.id.settings_textInput_max_records);
         switchDisplayDebugToasts = findViewById(R.id.settings_switch_display_debug_toasts);
         radioGroupUnits = findViewById(R.id.settings_radio_group_units);
@@ -53,7 +51,6 @@ public class SettingsActivity extends AppCompatActivity {
         boolean displayDebugToasts = getIntent().getExtras().getBoolean(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS);
 
         editTextCityName.setText(cityName);
-        editTextApiKey.setText(apiKey);
         setCheckedUnitsRadioButtons(units);
         editTextMaxCount.setText(String.valueOf(maxCount));
         switchDisplayDebugToasts.setChecked(displayDebugToasts);
@@ -75,14 +72,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void saveSettings() {
-        String apiKey = editTextApiKey.getText().toString();
         String city = editTextCityName.getText().toString();
         String units = getSelectedUnits();
         int maxCount = Integer.parseInt(editTextMaxCount.getText().toString());
         boolean displayDebugToasts = switchDisplayDebugToasts.isChecked();
 
         Intent data = new Intent();
-        data.putExtra(MainPreferencesConstants.API_KEY, apiKey);
         data.putExtra(MainPreferencesConstants.CITY, city);
         data.putExtra(MainPreferencesConstants.UNITS, units);
         data.putExtra(MainPreferencesConstants.MAX_COUNT, maxCount);
