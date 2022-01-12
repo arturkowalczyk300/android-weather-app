@@ -259,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        Toast.makeText(this, "req=" + String.valueOf(requestCode) + ", res=" + String.valueOf(resultCode), Toast.LENGTH_SHORT).show();
     }
 
     @Override

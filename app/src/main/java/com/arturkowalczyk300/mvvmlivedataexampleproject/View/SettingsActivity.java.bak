@@ -82,15 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         data.putExtra(MainPreferencesConstants.UNITS, units);
         data.putExtra(MainPreferencesConstants.MAX_COUNT, maxCount);
         data.putExtra(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, displayDebugToasts);
-        setResult(2048, data);
         finish();
-
-        /*WeatherReadingsRepository.setCityName(editTextCityName.getText().toString()); //TODO fix this!
-        WeatherReadingsRepository.setApiKey(editTextApiKey.getText().toString());
-        WeatherReadingsRepository.setUNITS(editTextUnits.getText().toString());
-        WeatherReadingsRepository.setMaxCount(Integer.
-                parseInt(editTextMaxCount.
-                        getText().toString()));*/
     }
 
     private String getSelectedUnits() {
