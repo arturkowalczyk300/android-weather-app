@@ -58,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSettings();
+                saveSettings(false);
             }
         });
 
@@ -67,11 +67,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        this.saveSettings();
+        this.saveSettings(true);
         super.onPause();
     }
 
-    private void saveSettings() {
+    private void saveSettings(boolean cancelled) {
         String city = editTextCityName.getText().toString();
         String units = getSelectedUnits();
         int maxCount = Integer.parseInt(editTextMaxCount.getText().toString());
@@ -82,6 +82,10 @@ public class SettingsActivity extends AppCompatActivity {
         data.putExtra(MainPreferencesConstants.UNITS, units);
         data.putExtra(MainPreferencesConstants.MAX_COUNT, maxCount);
         data.putExtra(MainPreferencesConstants.DISPLAY_DEBUG_TOASTS, displayDebugToasts);
+        if(cancelled)
+            setResult(RESULT_CANCELED);
+        else
+            setResult(RESULT_OK, data);
         finish();
     }
 
