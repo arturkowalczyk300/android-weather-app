@@ -30,7 +30,6 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReading
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.pranavpandey.android.dynamic.toasts.DynamicHint;
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.Date;
@@ -48,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton buttonAddWeatherReading = findViewById(R.id.button_add_weather_reading);
-        buttonAddWeatherReading.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton floatingActionButtonAddWeatherReading = findViewById(R.id.floating_action_button_add_weather_reading);
+        floatingActionButtonAddWeatherReading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddEditWeatherReading.class);
@@ -65,6 +64,23 @@ public class MainActivity extends AppCompatActivity {
 
         WeatherReadingAdapter adapter = new WeatherReadingAdapter();
         recyclerView.setAdapter(adapter);
+
+        //hide floatingActionButton when scroll
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if(newState == RecyclerView.SCROLL_STATE_IDLE)
+                    floatingActionButtonAddWeatherReading.show();
+                else floatingActionButtonAddWeatherReading.hide();
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         weatherReadingsViewModel = ViewModelProviders.of(this).get(WeatherReadingsViewModel.class);
         weatherReadingsViewModel.getAllWeatherReadings().observe(this, new Observer<List<WeatherReading>>() {

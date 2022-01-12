@@ -48,19 +48,22 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
         app:layout_anchor="@id/linear_layout_top_bar"
         app:layout_anchorGravity="bottom"
         android:layout_gravity="bottom"
         tools:listitem="@layout/weather_reading_item"
-        android:translationY="40dp"/>
+        android:translationY="40dp"
+        android:paddingBottom="75dp"
+        android:clipToPadding="false"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_add_weather_reading"
+        android:id="@+id/floating_action_button_add_weather_reading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add"
         android:layout_gravity="bottom|end"
-        android:layout_margin="32dp"/>
+        android:layout_margin="32dp" />
 
     <ProgressBar
         android:id="@+id/progress_bar_loading"
