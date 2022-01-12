@@ -51,10 +51,6 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
         @Override
         protected Void doInBackground(Void... voids)
         {
-            Date date1 = new Date(2021-DATE_START_YEAR, 8, 6, 20, 11);
-            weatherDAO.insert(new WeatherReading(date1, 20.0f, 1023, 80, Units.METRIC));
-            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 25.0f, 1030, 75, Units.METRIC));
-            weatherDAO.insert(new WeatherReading(Calendar.getInstance().getTime(), 30.0f, 1033, 70, Units.METRIC));
             return null;
         }
     }
