@@ -145,6 +145,12 @@ public class WeatherReadingsRepository {
                 returnUnit);
     }
 
+    public void getNewestReadingFromApi()
+    {
+        if(internetAvailable)
+            getAndInsertWeatherReadingFromApi();
+    }
+
     public WeatherReadingsRepository(Application application) {
         //init preferences repository
         preferencesRepository = new PreferencesRepository(application.getApplicationContext());

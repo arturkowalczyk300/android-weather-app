@@ -19,6 +19,7 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
     private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastError; //[true, "error!"] -> displays error toast with text "error!"
     private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastDefault;
     private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastSuccess;
+    private MutableLiveData<Boolean> mutableLiveDataRefreshRequest;
 
     public WeatherReadingsViewModel(@NonNull Application application) {
         super(application);
@@ -26,8 +27,7 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         mutableLiveDataToastDefault = new MutableLiveData<>();
         mutableLiveDataToastSuccess = new MutableLiveData<>();
         mutableLiveDataToastError = new MutableLiveData<>();
-
-        
+        mutableLiveDataRefreshRequest = new MutableLiveData<>();
 
         allWeatherReadings = repository.getAllWeatherReadings();
 
@@ -56,6 +56,15 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
             @Override
             public void onChanged(Boolean aBoolean) {
                 mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Exception thrown when try to get API response!"));
+            }
+        });
+
+        mutableLiveDataRefreshRequest.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean)
+                    repository.getNewestReadingFromApi();
+                    //mutableLiveDataRefreshRequest.setValue(false);
             }
         });
     }
@@ -148,5 +157,9 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
 
     public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastSuccess() {
         return mutableLiveDataToastSuccess;
+    }
+
+    public MutableLiveData<Boolean> getMutableLiveDataRefreshRequest() {
+        return mutableLiveDataRefreshRequest;
     }
 }

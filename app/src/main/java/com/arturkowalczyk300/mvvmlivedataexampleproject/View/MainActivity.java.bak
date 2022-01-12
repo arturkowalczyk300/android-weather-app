@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -80,6 +81,16 @@ public class MainActivity extends AppCompatActivity {
                 else floatingActionButtonAddWeatherReading.hide();
 
                 super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh()
+            {
+                weatherReadingsViewModel.getMutableLiveDataRefreshRequest().setValue(true);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -292,10 +303,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_delete_all_weather_readings:
                 weatherReadingsViewModel.deleteAllWeatherReadings();
                 Toast.makeText(this, "All weather readings deleted!", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.menu_delete_excess_weather_readings:
-                weatherReadingsViewModel.deleteExcessWeatherReadings();
-                Toast.makeText(this, "Excess records deleted!", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);

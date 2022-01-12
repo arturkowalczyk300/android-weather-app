@@ -13,14 +13,15 @@
         android:layout_height="wrap_content"
         android:background="#83132D"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/textView_no_internet_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:text="No internet connection!"
-            android:visibility="gone"
-            android:textSize="14sp"/>
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -28,48 +29,58 @@
         android:id="@+id/linear_layout_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationY="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:translationY="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="Count: "/>
+            android:text="Count: " />
+
         <TextView
             android:id="@+id/textView_records_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="7"/>
+            tools:text="7" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        app:layout_anchor="@id/linear_layout_top_bar"
-        app:layout_anchorGravity="bottom"
-        android:layout_gravity="bottom"
-        tools:listitem="@layout/weather_reading_item"
-        android:translationY="40dp"
-        android:paddingBottom="75dp"
-        android:clipToPadding="false"/>
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button_add_weather_reading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_add"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="32dp" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:clipToPadding="false"
+            android:paddingBottom="75dp"
+            android:translationY="40dp"
+            app:layout_anchor="@id/linear_layout_top_bar"
+            app:layout_anchorGravity="bottom"
+            tools:listitem="@layout/weather_reading_item" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button_add_weather_reading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="32dp"
+            android:src="@drawable/ic_add" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
