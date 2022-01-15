@@ -7,6 +7,8 @@ import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,12 +24,20 @@ import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.DecimalMax;
+import com.mobsandgeeks.saripaar.annotation.DecimalMin;
+import com.mobsandgeeks.saripaar.annotation.Digits;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class AddEditWeatherReading extends AppCompatActivity {
     public static final String EXTRA_ID = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_ID";
@@ -40,9 +50,26 @@ public class AddEditWeatherReading extends AppCompatActivity {
 
     Calendar currentSublimeDateTime;
     Calendar databaseDateTime;
+
+    boolean validationSuccess;
+    Validator validator;
+
+    @NotEmpty
+    @DecimalMin(value = Double.NEGATIVE_INFINITY, message = "Value should be number")
+    @DecimalMax(value = Double.POSITIVE_INFINITY, message = "Value should be number")
     private EditText editTextTemperature;
+
+    @NotEmpty
+    @DecimalMin(value = 0, message = "Value should be greater than or equal to 0 hPa")
+    @DecimalMax(value = 10000, message = "Value should be less than or equal to 10000 hPa")
     private EditText editTextPressure;
+
+    @NotEmpty
+    @DecimalMin(value = 0, message = "Value should be greater than or equal to 0%")
+    @DecimalMax(value = 100, message = "Value should be less than or equal to 100%")
     private EditText editTextHumidity;
+
+
     private Button buttonEditReadTime;
     private TextView textViewReadTime;
 
@@ -70,11 +97,9 @@ public class AddEditWeatherReading extends AppCompatActivity {
             long readTimeLong = intent.getLongExtra(EXTRA_READTIME, -1);
             Date readTime = new Date(readTimeLong);
 
-
             float temperature = intent.getFloatExtra(EXTRA_TEMPERATURE, -1);
-            int pressure = intent.getIntExtra(EXTRA_PRESSURE, -1);
-            int humidity = intent.getIntExtra(EXTRA_HUMIDITY, -1);
-
+            float pressure = intent.getFloatExtra(EXTRA_PRESSURE, -1);
+            float humidity = intent.getFloatExtra(EXTRA_HUMIDITY, -1);
 
             int year = readTime.getYear();
             int month = readTime.getMonth();
@@ -82,15 +107,11 @@ public class AddEditWeatherReading extends AppCompatActivity {
             int currentHour = readTime.getHours();
             int currentMinute = readTime.getMinutes();
             databaseDateTime.set(year + DATE_START_YEAR, month, dayOfMonth, currentHour, currentMinute);
-            //currentSublimeDateTime = databaseDateTime.clone();
             UpdateTextViewReadTime();
-            //timePickerReadTime.setIs24HourView(true);
-            //timePickerReadTime.setCurrentHour(currentHour);
-            //timePickerReadTime.setCurrentMinute(currentMinute);
 
             editTextTemperature.setText(Float.toString(temperature));
-            editTextPressure.setText(Integer.toString(pressure));
-            editTextHumidity.setText(Integer.toString(humidity));
+            editTextPressure.setText(Float.toString(pressure));
+            editTextHumidity.setText(Float.toString(humidity));
         } else {
             setTitle("Add weather reading");
         }
@@ -119,7 +140,80 @@ public class AddEditWeatherReading extends AppCompatActivity {
             }
         });
 
+        //validator
+        validator = new Validator(this);
+        validator.setValidationListener(new Validator.ValidationListener() {
+            @Override
+            public void onValidationSucceeded() {
+                validationSuccess = true;
+            }
 
+            @Override
+            public void onValidationFailed(List<ValidationError> errors) {
+                validationSuccess = false;
+
+                for (ValidationError error : errors) {
+                    View view = error.getView();
+                    String message = error.getCollatedErrorMessage(getApplicationContext());
+
+
+                    if (view instanceof EditText){
+                        ((EditText) view).setError(message);
+                    }
+                }
+            }
+        });
+
+        editTextTemperature.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validator.validate(false);
+            }
+        });
+
+        editTextPressure.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validator.validate(false);
+            }
+        });
+
+        editTextHumidity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validator.validate(false);
+            }
+        });
     }
 
     private void saveWeatherReading() {
@@ -163,7 +257,9 @@ public class AddEditWeatherReading extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_weatherReading:
-                saveWeatherReading();
+                validator.validate(false);
+                if(validationSuccess)
+                    saveWeatherReading();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -186,12 +282,10 @@ public class AddEditWeatherReading extends AppCompatActivity {
                     minute);
             UpdateTextViewReadTime();
         }
-
     };
 
     private void UpdateTextViewReadTime() {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         textViewReadTime.setText(sdf.format(currentSublimeDateTime.getTime()));
-
     }
 }

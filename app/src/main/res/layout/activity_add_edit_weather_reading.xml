@@ -9,73 +9,80 @@
     tools:context=".View.AddEditWeatherReading">
 
     <LinearLayout
+        android:id="@+id/linear_layout_pickers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/linear_layout_pickers"
-        android:layout_marginBottom="15dp">
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time and date: "/>
+            android:text="Time and date: " />
+
         <TextView
             android:id="@+id/textViewReadTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ems="8"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:ems="8"
-            tools:text="07:29 16.12.2021"/>
+            tools:text="07:29 16.12.2021" />
+
         <Button
             android:id="@+id/buttonEditReadTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit"/>
+            android:text="Edit" />
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/textViewTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperature:"
-        android:layout_below="@+id/linear_layout_pickers"/>
-
-    <EditText
-        android:id="@+id/editTextTemperature"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutTemperature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:layout_below="@+id/linear_layout_pickers"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="40dp"
+        android:paddingRight="20dp"
+        android:hint="Temperature">
 
-    <TextView
-        android:id="@+id/textViewPressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pressure:"
-        android:layout_below="@+id/editTextTemperature"/>
-    <EditText
-        android:id="@+id/editTextPressure"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextTemperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned|numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutPressure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:layout_below="@+id/editTextTemperature"
-        android:layout_toRightOf="@id/textViewPressure"
-        android:layout_marginTop="10dp"/>
+        android:layout_below="@+id/textInputLayoutTemperature"
+        android:layout_marginTop="40dp"
+        android:paddingRight="20dp"
+        app:suffixText="hPa"
+        android:hint="Pressure">
 
-    <TextView
-        android:id="@+id/textViewHumidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Humidity:"
-        android:layout_below="@+id/editTextPressure"/>
-    <EditText
-        android:id="@+id/editTextHumidity"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPressure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutHumidity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:layout_below="@+id/editTextPressure"
-        android:layout_toRightOf="@id/textViewHumidity"
-        android:layout_marginTop="10dp"/>
+        android:layout_below="@+id/textInputLayoutPressure"
+        android:layout_marginTop="40dp"
+        android:paddingRight="20dp"
+        android:hint="Humidity"
+        app:suffixText="%">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextHumidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"/>
+    </com.google.android.material.textfield.TextInputLayout>
 </RelativeLayout>
