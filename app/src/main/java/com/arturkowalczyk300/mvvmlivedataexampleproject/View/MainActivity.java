@@ -87,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh()
-            {
+            public void onRefresh() {
                 weatherReadingsViewModel.getMutableLiveDataRefreshRequest().setValue(true);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -192,8 +191,12 @@ public class MainActivity extends AppCompatActivity {
         weatherReadingsViewModel.getMutableLiveDataToastError().observe(this, new Observer<Pair<Boolean, String>>() {
             @Override
             public void onChanged(Pair<Boolean, String> booleanStringPair) {
-                if (booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
-                    DynamicToast.makeError(getApplicationContext(), booleanStringPair.second).show();
+                if (booleanStringPair.first.booleanValue()) {
+                    if (weatherReadingsViewModel.getDisplayDebugToasts())
+                        DynamicToast.makeError(getApplicationContext(), booleanStringPair.second).show();
+                    else
+                        DynamicToast.makeError(getApplicationContext(), "Reading from API failed!").show();
+                }
             }
         });
 
