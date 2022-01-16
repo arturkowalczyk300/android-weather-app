@@ -295,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
+            else if (resultCode == RESULT_CANCELED)
+                Toast.makeText(this, "Settings not updated!", Toast.LENGTH_SHORT).show();
         }
     }
 

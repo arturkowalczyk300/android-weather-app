@@ -44,7 +44,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
 
         @Override
         public boolean areContentsTheSame(@NonNull WeatherReading oldItem, @NonNull WeatherReading newItem) {
-            return oldItem.getReadTime().equals(newItem.getReadTime()) && // TODO: implement readTime back
+            return oldItem.getReadTime().equals(newItem.getReadTime()) &&
                     oldItem.getTemperature() == newItem.getTemperature() &&
                     oldItem.getPressure() == newItem.getPressure() &&
                     oldItem.getHumidity() == newItem.getHumidity() &&

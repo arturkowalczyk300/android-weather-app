@@ -71,7 +71,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
     private EditText editTextHumidity;
 
     @NotEmpty
-    @Pattern(regex="[\\p{Lower}\\p{Upper}]+", message = "City name can contains only letters")
+    @Pattern(regex = "[\\p{Lower}\\p{Upper}]+", message = "City name can contains only letters")
     private EditText editTextCity;
 
 
@@ -165,7 +165,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
                     String message = error.getCollatedErrorMessage(getApplicationContext());
 
 
-                    if (view instanceof EditText){
+                    if (view instanceof EditText) {
                         ((EditText) view).setError(message);
                     }
                 }
@@ -285,7 +285,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.save_weatherReading:
                 validator.validate(false);
-                if(validationSuccess)
+                if (validationSuccess)
                     saveWeatherReading();
                 return true;
             default:
@@ -296,12 +296,10 @@ public class AddEditWeatherReading extends AppCompatActivity {
     SublimePickerDialogFragment.Callback mFragmentCallback = new SublimePickerDialogFragment.Callback() {
         @Override
         public void onCancelled() {
-            Toast.makeText(getApplicationContext(), "onCancelled!", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onDateTimeRecurrenceSet(SelectedDate selectedDate, int hourOfDay, int minute, SublimeRecurrencePicker.RecurrenceOption recurrenceOption, String recurrenceRule) {
-            Toast.makeText(getApplicationContext(), "onDateTimeRecurrenceSet!", Toast.LENGTH_SHORT).show();
             currentSublimeDateTime.set(selectedDate.getFirstDate().get(Calendar.YEAR),
                     selectedDate.getFirstDate().get(Calendar.MONTH),
                     selectedDate.getFirstDate().get(Calendar.DATE),

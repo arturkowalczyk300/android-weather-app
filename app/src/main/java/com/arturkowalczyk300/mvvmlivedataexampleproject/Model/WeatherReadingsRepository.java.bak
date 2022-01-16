@@ -92,7 +92,7 @@ public class WeatherReadingsRepository {
 
                     if (response.isSuccessful()) {
                         temperature = response.body().getMain().getTemp().floatValue();
-                        pressure = response.body().getMain().getPressure().intValue(); // TODO: make conversion safe for sure ; https://stackoverflow.com/questions/42983242/idiomatic-way-of-converting-from-long-object-to-long-primitive-safely-in-java
+                        pressure = response.body().getMain().getPressure().intValue();
                         humidity = response.body().getMain().getHumidity().intValue();
                         city = response.body().getName();
 
