@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra(AddEditWeatherReading.EXTRA_TEMPERATURE, weatherReading.getTemperature());
                     intent.putExtra(AddEditWeatherReading.EXTRA_PRESSURE, weatherReading.getPressure());
                     intent.putExtra(AddEditWeatherReading.EXTRA_HUMIDITY, weatherReading.getHumidity());
+                    intent.putExtra(AddEditWeatherReading.EXTRA_CITY, weatherReading.getCity());
 
                 } catch (NullPointerException ex) {
                     Toast.makeText(getApplicationContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
@@ -230,12 +231,14 @@ public class MainActivity extends AppCompatActivity {
             String temperatureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_TEMPERATURE);
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
+            String cityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_CITY);
 
             WeatherReading weatherReading = new WeatherReading(readTime,
                     Float.parseFloat(temperatureStr),
                     Integer.parseInt(pressureStr),
                     Integer.parseInt(humidityStr),
-                    Units.valueOf(weatherReadingsViewModel.getUnits()));
+                    Units.valueOf(weatherReadingsViewModel.getUnits()),
+                    cityStr);
             weatherReadingsViewModel.insert(weatherReading);
 
             Toast.makeText(this, "Weather reading saved!", Toast.LENGTH_SHORT).show();
@@ -252,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
             String temperatureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_TEMPERATURE);
             String pressureStr = data.getStringExtra(AddEditWeatherReading.EXTRA_PRESSURE);
             String humidityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_HUMIDITY);
+            String cityStr = data.getStringExtra(AddEditWeatherReading.EXTRA_CITY);
 
             float temperature = Float.parseFloat(temperatureStr);
             int pressure = (int) Float.parseFloat(pressureStr);
@@ -261,7 +265,8 @@ public class MainActivity extends AppCompatActivity {
                     temperature,
                     pressure,
                     humidity,
-                    Units.valueOf(weatherReadingsViewModel.getUnits()));
+                    Units.valueOf(weatherReadingsViewModel.getUnits()),
+                    cityStr);
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 

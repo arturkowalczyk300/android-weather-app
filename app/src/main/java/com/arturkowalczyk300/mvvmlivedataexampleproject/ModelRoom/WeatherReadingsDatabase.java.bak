@@ -16,7 +16,7 @@ import java.util.Date;
 import static com.arturkowalczyk300.mvvmlivedataexampleproject.View.AddEditWeatherReading.DATE_START_YEAR;
 
 
-@Database(entities = {WeatherReading.class}, version = 4)
+@Database(entities = {WeatherReading.class}, version = 5)
 @TypeConverters({Converters.class})
 public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase {
     private static WeatherReadingsDatabase instance;

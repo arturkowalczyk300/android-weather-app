@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp">
 
     <RelativeLayout
         android:id="@+id/recycler_relative_layout"
@@ -30,10 +32,13 @@
             android:id="@+id/textView_readTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text = "12:09 10.11.2021"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
             android:layout_toRightOf="@+id/textView_temperature"
-            android:layout_marginLeft="170dp"/>
+            android:gravity="right"
+            android:maxLines="1"
+            android:text="12:09 10.11.2021"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/textView_pressure"
@@ -59,11 +64,24 @@
             android:layout_below="@+id/textView_temperature"
             android:layout_toRightOf="@id/textView_pressure"/>
         <TextView
+            android:id="@+id/textView_humidity_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="%"
             android:layout_below="@+id/textView_temperature"
             android:layout_toRightOf="@id/textView_humidity" />
+
+        <TextView
+            android:id="@+id/textView_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView_readTime"
+            android:gravity="right"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:textStyle=""
+            android:text="Wołów"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     </RelativeLayout>
 

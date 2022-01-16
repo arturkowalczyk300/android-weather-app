@@ -18,14 +18,16 @@ public class WeatherReading {
     private float temperature;
     private float pressure;
     private float humidity;
-    private Units unit;
+    private String city;
 
-    public WeatherReading(Date readTime, float temperature, float pressure, float humidity, Units unit) {
+    private Units unit;
+    public WeatherReading(Date readTime, float temperature, float pressure, float humidity, Units unit, String city) {
         this.readTime = readTime;
         this.temperature = temperature;
         this.pressure = pressure;
         this.humidity = humidity;
         this.unit = unit;
+        this.city= city;
     }
 
     public void setId(int id) {
@@ -62,5 +64,13 @@ public class WeatherReading {
 
     public void setUnit(Units unit) {
         this.unit = unit;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

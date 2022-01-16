@@ -45,6 +45,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
     public static final String EXTRA_TEMPERATURE = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_TEMPERATURE";
     public static final String EXTRA_PRESSURE = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_PRESSURE";
     public static final String EXTRA_HUMIDITY = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_HUMIDITY";
+    public static final String EXTRA_CITY = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_CITY";
     public static final String DATE_FORMAT = "HH:mm dd.MM.yyyy";
     public static final int DATE_START_YEAR = 1900;
 
@@ -69,6 +70,10 @@ public class AddEditWeatherReading extends AppCompatActivity {
     @DecimalMax(value = 100, message = "Value should be less than or equal to 100%")
     private EditText editTextHumidity;
 
+    @NotEmpty
+    @Pattern(regex="[\\p{Lower}\\p{Upper}]+", message = "City name can contains only letters")
+    private EditText editTextCity;
+
 
     private Button buttonEditReadTime;
     private TextView textViewReadTime;
@@ -86,6 +91,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         editTextTemperature = findViewById(R.id.editTextTemperature);
         editTextPressure = findViewById(R.id.editTextPressure);
         editTextHumidity = findViewById(R.id.editTextHumidity);
+        editTextCity = findViewById(R.id.editTextCity);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
@@ -100,6 +106,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
             float temperature = intent.getFloatExtra(EXTRA_TEMPERATURE, -1);
             float pressure = intent.getFloatExtra(EXTRA_PRESSURE, -1);
             float humidity = intent.getFloatExtra(EXTRA_HUMIDITY, -1);
+            String city = intent.getStringExtra(EXTRA_CITY);
 
             int year = readTime.getYear();
             int month = readTime.getMonth();
@@ -112,6 +119,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
             editTextTemperature.setText(Float.toString(temperature));
             editTextPressure.setText(Float.toString(pressure));
             editTextHumidity.setText(Float.toString(humidity));
+            editTextCity.setText(city);
         } else {
             setTitle("Add weather reading");
         }
@@ -226,6 +234,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         String temperatureStr = editTextTemperature.getText().toString();
         String pressureStr = editTextPressure.getText().toString();
         String humidityStr = editTextHumidity.getText().toString();
+        String cityStr = editTextCity.getText().toString();
 
         if (temperatureStr.trim().isEmpty() || pressureStr.trim().isEmpty() || humidityStr.trim().isEmpty()) {
             Toast.makeText(this, "Please insert values!", Toast.LENGTH_SHORT).show();
@@ -237,6 +246,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         data.putExtra(EXTRA_TEMPERATURE, temperatureStr);
         data.putExtra(EXTRA_PRESSURE, pressureStr);
         data.putExtra(EXTRA_HUMIDITY, humidityStr);
+        data.putExtra(EXTRA_CITY, cityStr);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

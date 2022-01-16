@@ -59,9 +59,9 @@ public class WeatherReadingsRepository {
 
     private Date readTime;
     private float temperature;
-
     private int pressure;
     private int humidity;
+    private String city;
 
     private WeatherReading getAndInsertWeatherReadingFromApi() {
         readTime = Calendar.getInstance().getTime();
@@ -94,6 +94,7 @@ public class WeatherReadingsRepository {
                         temperature = response.body().getMain().getTemp().floatValue();
                         pressure = response.body().getMain().getPressure().intValue(); // TODO: make conversion safe for sure ; https://stackoverflow.com/questions/42983242/idiomatic-way-of-converting-from-long-object-to-long-primitive-safely-in-java
                         humidity = response.body().getMain().getHumidity().intValue();
+                        city = response.body().getName();
 
                         getReadingFromApiCorrectResponse.setValue(Boolean.TRUE);
                     }
@@ -110,7 +111,8 @@ public class WeatherReadingsRepository {
                                     temperature,
                                     pressure,
                                     humidity,
-                                    returnUnit);
+                                    returnUnit,
+                                    city);
                     insert(currentWeatherReading);
 
                     dataLoadingFromApiSuccessObservable.setValue(true);
@@ -142,7 +144,8 @@ public class WeatherReadingsRepository {
                 temperature,
                 pressure,
                 humidity,
-                returnUnit);
+                returnUnit,
+                city);
     }
 
     public void getNewestReadingFromApi()

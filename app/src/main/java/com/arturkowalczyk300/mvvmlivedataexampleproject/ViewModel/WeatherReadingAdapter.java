@@ -3,13 +3,9 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.os.Debug;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +19,6 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRep
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.Units;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
-import com.arturkowalczyk300.mvvmlivedataexampleproject.View.MainActivity;
 
 import java.text.SimpleDateFormat;
 
@@ -35,6 +30,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
     private boolean dataLoadedFromApiFlag;
     private OnItemClickListener listener;
     private ValueAnimator recyclerItemAnimation;
+
     public WeatherReadingAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -51,7 +47,8 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             return oldItem.getReadTime().equals(newItem.getReadTime()) && // TODO: implement readTime back
                     oldItem.getTemperature() == newItem.getTemperature() &&
                     oldItem.getPressure() == newItem.getPressure() &&
-                    oldItem.getHumidity() == newItem.getHumidity();
+                    oldItem.getHumidity() == newItem.getHumidity() &&
+                    oldItem.getCity().equals(newItem.getCity());
         }
     };
 
@@ -69,16 +66,16 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         //finally there should be code for animate newest item for few seconds
-        if (position == 0 && dataLoadedFromApiFlag ) {
-            int colorFrom= Color.parseColor(WeatherReadingsRepository.getRecyclerNewItemColor());
-            int colorTo= Color.parseColor(WeatherReadingsRepository.getRecyclerNormalItemColor());
+        if (position == 0 && dataLoadedFromApiFlag) {
+            int colorFrom = Color.parseColor(WeatherReadingsRepository.getRecyclerNewItemColor());
+            int colorTo = Color.parseColor(WeatherReadingsRepository.getRecyclerNormalItemColor());
 
             recyclerItemAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             recyclerItemAnimation.setDuration(5000);
             recyclerItemAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    int animatedValue = (int)animation.getAnimatedValue();
+                    int animatedValue = (int) animation.getAnimatedValue();
                     holder.relativeLayout.setBackgroundColor(animatedValue);
                 }
             });
@@ -90,7 +87,8 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             holder.textViewTemperature.setText(Float.toString(currentWeatherReading.getTemperature()));
             holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
             holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
-            holder.textViewUnits.setText( currentWeatherReading.getUnit() == Units.METRIC? "°C" : "°F");
+            holder.textViewCity.setText(currentWeatherReading.getCity());
+            holder.textViewUnits.setText(currentWeatherReading.getUnit() == Units.METRIC ? "°C" : "°F");
         } catch (NullPointerException ex) {
             Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
                     + ", method=" + ex.getStackTrace()[0].getMethodName()
@@ -108,6 +106,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         private TextView textViewPressure;
         private TextView textViewHumidity;
         private TextView textViewUnits;
+        private TextView textViewCity;
         private RelativeLayout relativeLayout;
 
         public WeatherReadingHolder(View itemView) {
@@ -117,6 +116,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             textViewPressure = itemView.findViewById(R.id.textView_pressure);
             textViewHumidity = itemView.findViewById(R.id.textView_humidity);
             textViewUnits = itemView.findViewById(R.id.textView_units);
+            textViewCity = itemView.findViewById(R.id.textView_city);
             relativeLayout = itemView.findViewById(R.id.recycler_relative_layout);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -137,6 +137,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
     public void setDataLoadedFromApiFlag(boolean dataLoadedFromApiFlag) {
         this.dataLoadedFromApiFlag = dataLoadedFromApiFlag;
     }
