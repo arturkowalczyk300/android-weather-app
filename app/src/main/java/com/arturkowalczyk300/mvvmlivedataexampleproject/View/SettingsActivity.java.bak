@@ -29,7 +29,7 @@ import java.util.Locale;
 public class SettingsActivity extends AppCompatActivity {
 
     @NotEmpty
-    @Pattern(regex="[\\p{Lower}\\p{Upper}]+", message = "City name can contains only letters")
+    @Pattern(regex="[\\p{Lower}\\p{Upper}\\p{Space}]+", message = "City name can contains only letters")
     EditText editTextCityName;
 
     @NotEmpty

@@ -71,7 +71,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
     private EditText editTextHumidity;
 
     @NotEmpty
-    @Pattern(regex = "[\\p{Lower}\\p{Upper}]+", message = "City name can contains only letters")
+    @Pattern(regex = "[\\p{Lower}\\p{Upper}\\p{Space}]+", message = "City name can contains only letters")
     private EditText editTextCity;
 
 
