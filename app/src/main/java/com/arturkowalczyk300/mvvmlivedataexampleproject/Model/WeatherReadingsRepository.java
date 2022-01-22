@@ -158,7 +158,7 @@ public class WeatherReadingsRepository {
         //init preferences repository
         preferencesRepository = new PreferencesRepository(application.getApplicationContext());
 
-        //observe connection state
+        //observe connection state and automatically load data from API, when connection is estalished
         internetConnectionState = new ConnectionLiveData(application);
         internetConnectionState.observeForever(new Observer<ConnectionModel>() {
             @Override

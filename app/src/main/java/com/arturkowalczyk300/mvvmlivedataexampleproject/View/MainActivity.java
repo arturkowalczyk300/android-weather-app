@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int SETTINGS_ACTIVITY_REQUEST = 3;
 
     private WeatherReadingsViewModel weatherReadingsViewModel;
+
+    private boolean requestItemAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +95,28 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
         weatherReadingsViewModel = ViewModelProviders.of(this).get(WeatherReadingsViewModel.class);
+
+        //observable to set request animation flag
+        weatherReadingsViewModel.getDataLoadingFromApiSuccessObservable().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    requestItemAnimation = true;
+                    weatherReadingsViewModel.getDataLoadingFromApiSuccessObservable().setValue(false);
+                }
+            }
+        });
+
+        //observable to update recyclerView's item list
         weatherReadingsViewModel.getAllWeatherReadings().observe(this, new Observer<List<WeatherReading>>() {
             @Override
             public void onChanged(List<WeatherReading> weatherReadings) {
                 //update RecyclerView
                 adapter.submitList(weatherReadings);
-                adapter.setDataLoadedFromApiFlag(weatherReadingsViewModel.
-                        getDataLoadingFromApiSuccessObservable().getValue());
+
+                //set animation request
+                adapter.setDataLoadedFromApiFlag(requestItemAnimation);
             }
         });
 
@@ -294,8 +310,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception ex) {
                     Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
                 }
-            }
-            else if (resultCode == RESULT_CANCELED)
+            } else if (resultCode == RESULT_CANCELED)
                 Toast.makeText(this, "Settings not updated!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -329,4 +344,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+
+    }
 }

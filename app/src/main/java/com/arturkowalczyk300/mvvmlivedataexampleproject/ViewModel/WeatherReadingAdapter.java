@@ -1,8 +1,11 @@
 package com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +31,9 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
 
 
     private boolean dataLoadedFromApiFlag;
+
     private OnItemClickListener listener;
     private ValueAnimator recyclerItemAnimation;
-
     public WeatherReadingAdapter() {
         super(DIFF_CALLBACK);
     }
@@ -65,7 +68,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         WeatherReading currentWeatherReading = getItem(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-        //finally there should be code for animate newest item for few seconds
+        //animate newest item color for few seconds
         if (position == 0 && dataLoadedFromApiFlag) {
             int colorFrom = Color.parseColor(WeatherReadingsRepository.getRecyclerNewItemColor());
             int colorTo = Color.parseColor(WeatherReadingsRepository.getRecyclerNormalItemColor());
@@ -101,6 +104,7 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
     }
 
     class WeatherReadingHolder extends RecyclerView.ViewHolder {
+
         private TextView textViewReadTime;
         private TextView textViewTemperature;
         private TextView textViewPressure;
@@ -108,7 +112,6 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
         private TextView textViewUnits;
         private TextView textViewCity;
         private RelativeLayout relativeLayout;
-
         public WeatherReadingHolder(View itemView) {
             super(itemView);
             textViewReadTime = itemView.findViewById(R.id.textView_readTime);
@@ -128,12 +131,12 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
                 }
             });
         }
-    }
 
+    }
     public interface OnItemClickListener {
+
         void onItemClick(WeatherReading weatherReading);
     }
-
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
