@@ -26,7 +26,11 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
     public static synchronized WeatherReadingsDatabase getInstance(Context context) {
         if (instance == null) //to make it thread-safe
         {
-            instance = Room.databaseBuilder(context.getApplicationContext(), WeatherReadingsDatabase.class, "weatherReadings_database")
+            instance = Room.
+                    databaseBuilder(
+                            context.getApplicationContext(),
+                            WeatherReadingsDatabase.class,
+                            "weatherReadings_database")  //NON-NLS
                     .fallbackToDestructiveMigration() //destroy whole database, when version will increase
                     .addCallback(roomCallback)
                     .build();
@@ -34,8 +38,7 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
         return instance;
     }
 
-    private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback()
-    {
+    private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
@@ -43,14 +46,15 @@ public abstract class WeatherReadingsDatabase extends androidx.room.RoomDatabase
         }
     };
 
-    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void>
-    {
+    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void> {
         private WeatherDAO weatherDAO;
-        private PopulateDbAsyncTask(WeatherReadingsDatabase db){ weatherDAO = db.weatherDAO(); }
+
+        private PopulateDbAsyncTask(WeatherReadingsDatabase db) {
+            weatherDAO = db.weatherDAO();
+        }
 
         @Override
-        protected Void doInBackground(Void... voids)
-        {
+        protected Void doInBackground(Void... voids) {
             return null;
         }
     }

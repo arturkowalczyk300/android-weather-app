@@ -7,7 +7,7 @@ import androidx.room.TypeConverter;
 import java.util.Date;
 
 
-@Entity(tableName = "weather_table")
+@Entity(tableName = "weather_table") //NON-NLS
 public class WeatherReading {
 
 

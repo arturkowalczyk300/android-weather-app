@@ -4,24 +4,24 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("unused") //NON-NLS
 public class Main {
 
-    @SerializedName("feels_like")
+    @SerializedName("feels_like") //NON-NLS
     private Double feelsLike;
-    @SerializedName("grnd_level")
+    @SerializedName("grnd_level") //NON-NLS
     private Long grndLevel;
     @Expose
     private Long humidity;
     @Expose
     private Long pressure;
-    @SerializedName("sea_level")
+    @SerializedName("sea_level") //NON-NLS
     private Long seaLevel;
     @Expose
     private Double temp;
-    @SerializedName("temp_max")
+    @SerializedName("temp_max") //NON-NLS
     private Double tempMax;
-    @SerializedName("temp_min")
+    @SerializedName("temp_min") //NON-NLS
     private Double tempMin;
 
     public Double getFeelsLike() {

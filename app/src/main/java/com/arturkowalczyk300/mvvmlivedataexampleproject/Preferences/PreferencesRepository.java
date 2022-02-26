@@ -13,7 +13,7 @@ public class PreferencesRepository {
     }
 
     public String getApiKey() {
-        return sharedPreferences.getString(MainPreferencesConstants.API_KEY, "to_be_written");
+        return sharedPreferences.getString(MainPreferencesConstants.API_KEY, MainPreferencesConstants.DEFAULT_API_KEY);
     }
 
     public void setApiKey(String apiKey) {
@@ -22,7 +22,7 @@ public class PreferencesRepository {
     }
 
     public String getCity() {
-        return sharedPreferences.getString(MainPreferencesConstants.CITY, "Wolow");
+        return sharedPreferences.getString(MainPreferencesConstants.CITY, MainPreferencesConstants.DEFAULT_CITY);
     }
 
     public void setCity(String city) {
@@ -31,7 +31,7 @@ public class PreferencesRepository {
     }
 
     public String getUnits() {
-        return sharedPreferences.getString(MainPreferencesConstants.UNITS, "metric");
+        return sharedPreferences.getString(MainPreferencesConstants.UNITS, MainPreferencesConstants.DEFAULT_UNITS);
     }
 
     public void setUnits(String units) {

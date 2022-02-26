@@ -80,7 +80,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
             android:textStyle=""
-            android:text="Wołów"
+            android:text="London"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     </RelativeLayout>

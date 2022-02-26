@@ -3,7 +3,7 @@ package com.arturkowalczyk300.mvvmlivedataexampleproject.ModelApi;
 
 import com.google.gson.annotations.Expose;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("unused") //NON-NLS
 public class Clouds {
 
     @Expose

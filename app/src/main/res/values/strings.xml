@@ -1,3 +1,49 @@
 <resources>
     <string name="app_name">MVVMLivedataExampleProject</string>
+    <string name="addedit_validator_valueShouldBeNumber">Value should be a number!</string>
+    <string name="addedit_validator_valuePressureGreaterOrEqual">Value should be greater than or equal to 0 hPa</string>
+    <string name="addedit_validator_valuePressureLessOrEqual">Value should be less than or equal to 10000 hPa</string>
+    <string name="addedit_validator_valuePercentGreaterOrEqual">Value should be greater than or equal to 0%</string>
+    <string name="addedit_validator_valuePercentLessOrEqual">Value should be less than or equal to 100%</string>
+    <string name="addedit_validator_valueTooLow">Value is too low</string>
+    <string name="addedit_validator_cityShouldContainsOnlyLetters">City name should contains only letters</string>
+    <string name="addedit_title_editWeatherReading">Edit weather reading</string>
+    <string name="addedit_title_addWeatherReading">Add weather reading</string>
+    <string name="addedit_toast_pleaseInsertValues">Please insert values!</string>
+    <string name="main_weatherReadingDeleted">Weather reading deleted</string>
+    <string name="main_readingFromApiFailed">Reading from API failed!</string>
+    <string name="main_weatherReadingSaved">Weather reading saved!</string>
+    <string name="main_weatherReadingNotSaved">Weather reading not saved!</string>
+    <string name="main_weatherReadingCantBeUpdated">Weather reading can\'t be updated!</string>
+    <string name="main_weatherReadingUpdated">Weather reading updated!</string>
+    <string name="main_settingsUpdated">Settings updated!</string>
+    <string name="main_settingsNotUpdated">Settings not updated!</string>
+    <string name="main_allWeatherReadingsDeleted">All weather readings deleted!</string>
+    <string name="viewModel_correctApiResponse">Correct API response!</string>
+    <string name="viewModel_nullBodyApiResponse">Null body API response!</string>
+    <string name="viewModel_apiReadFailure">API read failure:, </string>
+    <string name="viewModel_exceptionThrownApiResponse">Exception thrown API was trying to get response!</string>
+
+    <string name="view_addEdit_timeAndDate">Time and date: </string>
+    <string name="view_addEdit_edit">Edit</string>
+    <string name="view_addEdit_temperature">Temperature</string>
+    <string name="view_addEdit_pressure">Pressure</string>
+    <string name="view_addEdit_humidity">Humidity</string>
+    <string name="view_addEdit_city">City</string>
+
+    <string name="view_addWeatherReading">Save</string>
+
+    <string name="view_main_noInternetConnection">No internet connection!</string>
+    <string name="view_main_count">Count: </string>
+
+    <string name="settings_city">City</string>
+    <string name="settings_maxRecords">Max records</string>
+    <string name="settings_units">Units</string>
+    <string name="settings_unitsMetric">metric</string>
+    <string name="settings_unitsImperial">imperial</string>
+    <string name="settings_settingsDisplayDebugToasts">Display debug toasts</string>
+    <string name="settings_settingsSave">Save</string>
+
+    <string name="view_mainMenu_deleteAllWeatherReadings">Delete all weather readings</string>
+    <string name="view_mainMenu_settings">Settings</string>
 </resources>

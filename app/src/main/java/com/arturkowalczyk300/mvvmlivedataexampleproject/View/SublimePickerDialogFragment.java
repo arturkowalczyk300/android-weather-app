@@ -66,7 +66,7 @@ public class SublimePickerDialogFragment extends DialogFragment {
 
         //options can be null, if so, default options are used
         if(arguments != null){
-            options = arguments.getParcelable("SUBLIME_OPTIONS");
+            options = arguments.getParcelable(AddEditWeatherReading.SUBLIME_OPTIONS);
         }
 
         mSublimePicker.initializePicker(options, mListener);

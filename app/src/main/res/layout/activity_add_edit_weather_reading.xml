@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time and date: " />
+            android:text= "@string/view_addEdit_timeAndDate"/>
 
         <TextView
             android:id="@+id/textViewReadTime"
@@ -32,7 +32,7 @@
             android:id="@+id/buttonEditReadTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit" />
+            android:text="@string/view_addEdit_edit" />
     </LinearLayout>
 
 
@@ -43,7 +43,7 @@
         android:layout_below="@+id/linear_layout_pickers"
         android:layout_marginTop="40dp"
         android:paddingRight="20dp"
-        android:hint="Temperature">
+        android:hint="@string/view_addEdit_temperature">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextTemperature"
@@ -60,7 +60,7 @@
         android:layout_marginTop="40dp"
         android:paddingRight="20dp"
         app:suffixText="hPa"
-        android:hint="Pressure">
+        android:hint="@string/view_addEdit_pressure">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextPressure"
@@ -76,7 +76,7 @@
         android:layout_below="@+id/textInputLayoutPressure"
         android:layout_marginTop="40dp"
         android:paddingRight="20dp"
-        android:hint="Humidity"
+        android:hint="@string/view_addEdit_humidity"
         app:suffixText="%">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -93,7 +93,7 @@
         android:layout_below="@+id/textInputLayoutHumidity"
         android:layout_marginTop="40dp"
         android:paddingRight="20dp"
-        android:hint="City">
+        android:hint="@string/view_addEdit_city">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextCity"

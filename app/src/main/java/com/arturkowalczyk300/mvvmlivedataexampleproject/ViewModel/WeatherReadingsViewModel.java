@@ -10,19 +10,19 @@ import androidx.lifecycle.Observer;
 
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.Model.WeatherReadingsRepository;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 
 import java.util.List;
 
-public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewModel {
+public class WeatherReadingsViewModel extends androidx.lifecycle.ViewModel {
     private WeatherReadingsRepository repository;
     private LiveData<List<WeatherReading>> allWeatherReadings;
-    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastError; //[true, "error!"] -> displays error toast with text "error!"
-    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastDefault;
-    private MutableLiveData<Pair<Boolean, String>> mutableLiveDataToastSuccess;
+    private MutableLiveData<Pair<Boolean, Pair<Integer, String>>> mutableLiveDataToastError; //[true, "error!"] -> displays error toast with text "error!"
+    private MutableLiveData<Pair<Boolean, Integer>> mutableLiveDataToastDefault;
+    private MutableLiveData<Pair<Boolean, Integer>> mutableLiveDataToastSuccess;
     private MutableLiveData<Boolean> mutableLiveDataRefreshRequest;
 
     public WeatherReadingsViewModel(@NonNull Application application) {
-        super(application);
         repository = new WeatherReadingsRepository(application);
         mutableLiveDataToastDefault = new MutableLiveData<>();
         mutableLiveDataToastSuccess = new MutableLiveData<>();
@@ -35,27 +35,27 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.getGetReadingFromApiCorrectResponse().observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                mutableLiveDataToastSuccess.setValue(Pair.create(Boolean.TRUE, "Correct API response!"));
+                mutableLiveDataToastSuccess.setValue(Pair.create(Boolean.TRUE, R.string.viewModel_correctApiResponse));
             }
         });
 
         repository.getGetReadingFromApiNullBodyResponse().observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Null body API response!"));
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, Pair.create(R.string.viewModel_nullBodyApiResponse, "")));
             }
         });
 
-        repository.getGetReadingFromApiFailure().observeForever(new Observer<Pair<Boolean, String>>() {
+        repository.getGetReadingFromApiFailure().observeForever(new Observer<Pair<Boolean, Pair<Integer, String>>>() {
             @Override
-            public void onChanged(Pair<Boolean, String> booleanStringPair) {
-                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "API read failure:, "+booleanStringPair));
+            public void onChanged(Pair<Boolean, Pair<Integer, String>> booleanStringPair) {
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, Pair.create(R.string.viewModel_apiReadFailure, booleanStringPair.second.toString())));
             }
         });
         repository.getGetReadingFromApiExceptionThrown().observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, "Exception thrown when try to get API response!"));
+                mutableLiveDataToastError.setValue(Pair.create(Boolean.TRUE, Pair.create(R.string.viewModel_exceptionThrownApiResponse, "")));
             }
         });
 
@@ -147,15 +147,15 @@ public class WeatherReadingsViewModel extends androidx.lifecycle.AndroidViewMode
         repository.setDisplayDebugToasts(displayDebugToasts);
     }
 
-    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastError() {
+    public MutableLiveData<Pair<Boolean, Pair<Integer,String>>> getMutableLiveDataToastError() {
         return mutableLiveDataToastError;
     }
 
-    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastDefault() {
+    public MutableLiveData<Pair<Boolean, Integer>> getMutableLiveDataToastDefault() {
         return mutableLiveDataToastDefault;
     }
 
-    public MutableLiveData<Pair<Boolean, String>> getMutableLiveDataToastSuccess() {
+    public MutableLiveData<Pair<Boolean, Integer>> getMutableLiveDataToastSuccess() {
         return mutableLiveDataToastSuccess;
     }
 

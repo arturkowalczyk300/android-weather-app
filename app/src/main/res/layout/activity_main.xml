@@ -18,7 +18,7 @@
             android:id="@+id/textView_no_internet_connection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No internet connection!"
+            android:text="@string/view_main_noInternetConnection"
             android:textAlignment="center"
             android:textSize="14sp"
             android:visibility="gone" />
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="Count: " />
+            android:text="@string/view_main_count" />
 
         <TextView
             android:id="@+id/textView_records_count"

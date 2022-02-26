@@ -13,19 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:hint="City">
+        android:hint="@string/settings_city">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/settings_textInput_city"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:hint="Max records">
+        android:hint="@string/settings_maxRecords">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/settings_textInput_max_records"
@@ -44,7 +44,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Units"
+            android:text="@string/settings_units"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -57,13 +57,13 @@
                 android:id="@+id/settings_radio_button_units_metric"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="metric" />
+                android:text="@string/settings_unitsMetric" />
 
             <RadioButton
                 android:id="@+id/settings_radio_button_units_imperial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="imperial" />
+                android:text="@string/settings_unitsImperial" />
 
         </RadioGroup>
 
@@ -77,7 +77,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Display debug toasts" />
+            android:text="@string/settings_settingsDisplayDebugToasts" />
 
         <Switch
             android:id="@+id/settings_switch_display_debug_toasts"
@@ -90,5 +90,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Save" />
+        android:text="@string/settings_settingsSave" />
 </LinearLayout>

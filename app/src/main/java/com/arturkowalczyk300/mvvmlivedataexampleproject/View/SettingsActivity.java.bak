@@ -29,11 +29,11 @@ import java.util.Locale;
 public class SettingsActivity extends AppCompatActivity {
 
     @NotEmpty
-    @Pattern(regex="[\\p{Lower}\\p{Upper}\\p{Space}]+", message = "City name can contains only letters")
+    @Pattern(regex="[\\p{Lower}\\p{Upper}\\p{Space}]+", messageResId = R.string.addedit_validator_cityShouldContainsOnlyLetters)
     EditText editTextCityName;
 
     @NotEmpty
-    @DecimalMin(value=1, message = "Value is too low")
+    @DecimalMin(value=1, messageResId = R.string.addedit_validator_valueTooLow)
     EditText editTextMaxCount;
 
     Button buttonSave;

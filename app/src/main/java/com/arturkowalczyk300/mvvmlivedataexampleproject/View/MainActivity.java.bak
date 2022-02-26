@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ import com.arturkowalczyk300.mvvmlivedataexampleproject.R;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingAdapter;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModel;
 import com.arturkowalczyk300.mvvmlivedataexampleproject.ModelRoom.WeatherReading;
+import com.arturkowalczyk300.mvvmlivedataexampleproject.ViewModel.WeatherReadingsViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
@@ -95,7 +97,10 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        weatherReadingsViewModel = ViewModelProviders.of(this).get(WeatherReadingsViewModel.class);
+
+        WeatherReadingsViewModelFactory factory = new WeatherReadingsViewModelFactory(getApplication());
+
+        weatherReadingsViewModel = new ViewModelProvider(this, factory).get(WeatherReadingsViewModel.class);
 
         //observable to set request animation flag
         weatherReadingsViewModel.getDataLoadingFromApiSuccessObservable().observe(this, new Observer<Boolean>() {
@@ -129,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 weatherReadingsViewModel.delete(adapter.getWeatherReadingAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "Weather reading deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getString(R.string.main_weatherReadingDeleted), Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -188,30 +193,33 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewNoInternetConnection = findViewById(R.id.textView_no_internet_connection);
 
         //set observables to toasts messages from ViewModel
-        weatherReadingsViewModel.getMutableLiveDataToastDefault().observe(this, new Observer<Pair<Boolean, String>>() {
+        weatherReadingsViewModel.getMutableLiveDataToastDefault().observe(this, new Observer<Pair<Boolean, Integer>>() {
             @Override
-            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+            public void onChanged(Pair<Boolean, Integer> booleanStringPair) {
                 if (booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
-                    DynamicToast.make(getApplicationContext(), booleanStringPair.second).show();
+                    DynamicToast.make(getApplicationContext(), getString(booleanStringPair.second)).show();
             }
         });
 
-        weatherReadingsViewModel.getMutableLiveDataToastSuccess().observe(this, new Observer<Pair<Boolean, String>>() {
+        weatherReadingsViewModel.getMutableLiveDataToastSuccess().observe(this, new Observer<Pair<Boolean, Integer>>() {
             @Override
-            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+            public void onChanged(Pair<Boolean, Integer> booleanStringPair) {
                 if (booleanStringPair.first.booleanValue() && weatherReadingsViewModel.getDisplayDebugToasts())
-                    DynamicToast.makeSuccess(getApplicationContext(), booleanStringPair.second).show();
+                    DynamicToast.makeSuccess(getApplicationContext(), getString(booleanStringPair.second)).show();
             }
         });
 
-        weatherReadingsViewModel.getMutableLiveDataToastError().observe(this, new Observer<Pair<Boolean, String>>() {
+        weatherReadingsViewModel.getMutableLiveDataToastError().observe(this, new Observer<Pair<Boolean, Pair<Integer,String>>>() {
             @Override
-            public void onChanged(Pair<Boolean, String> booleanStringPair) {
+            public void onChanged(Pair<Boolean, Pair<Integer, String>> booleanStringPair) {
                 if (booleanStringPair.first.booleanValue()) {
                     if (weatherReadingsViewModel.getDisplayDebugToasts())
-                        DynamicToast.makeError(getApplicationContext(), booleanStringPair.second).show();
+                        if(booleanStringPair.second.first != null)
+                            DynamicToast.makeError(getApplicationContext(), getString(booleanStringPair.second.first) + booleanStringPair.second.second).show(); //loaded string from context plus custom message
+                        else
+                            DynamicToast.makeError(getApplicationContext(), booleanStringPair.second.second).show(); //only custom message
                     else
-                        DynamicToast.makeError(getApplicationContext(), "Reading from API failed!").show();
+                        DynamicToast.makeError(getApplicationContext(), getString(R.string.main_readingFromApiFailed)).show();
                 }
             }
         });
@@ -260,12 +268,12 @@ public class MainActivity extends AppCompatActivity {
                     cityStr);
             weatherReadingsViewModel.insert(weatherReading);
 
-            Toast.makeText(this, "Weather reading saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.main_weatherReadingSaved), Toast.LENGTH_SHORT).show();
         } else if (requestCode == EDIT_WEATHER_READING_REQUEST && resultCode == RESULT_OK) {
             int id = data.getIntExtra(AddEditWeatherReading.EXTRA_ID, -1);
 
             if (id == -1) {
-                Toast.makeText(this, "Weather reading can't be updated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.main_weatherReadingCantBeUpdated), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -289,10 +297,10 @@ public class MainActivity extends AppCompatActivity {
             weatherReading.setId(id);
             weatherReadingsViewModel.update(weatherReading);
 
-            Toast.makeText(this, "Weather reading updated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.main_weatherReadingUpdated), Toast.LENGTH_SHORT).show();
         } else if ((requestCode == ADD_WEATHER_READING_REQUEST || requestCode == EDIT_WEATHER_READING_REQUEST)
                 && resultCode != RESULT_OK) {
-            Toast.makeText(this, "Weather reading not saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.main_weatherReadingNotSaved), Toast.LENGTH_SHORT).show();
         } else if (requestCode == SETTINGS_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 try {
@@ -306,12 +314,12 @@ public class MainActivity extends AppCompatActivity {
                     weatherReadingsViewModel.setUNITS(units);
                     weatherReadingsViewModel.setMaxCount(maxCount);
                     weatherReadingsViewModel.setDisplayDebugToasts(displayDebugToasts);
-                    Toast.makeText(this, "Settings updated!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.main_settingsUpdated), Toast.LENGTH_SHORT).show();
                 } catch (Exception ex) {
                     Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
                 }
             } else if (resultCode == RESULT_CANCELED)
-                Toast.makeText(this, "Settings not updated!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.main_settingsNotUpdated), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -327,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_delete_all_weather_readings:
                 weatherReadingsViewModel.deleteAllWeatherReadings();
-                Toast.makeText(this, "All weather readings deleted!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.main_allWeatherReadingsDeleted), Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);

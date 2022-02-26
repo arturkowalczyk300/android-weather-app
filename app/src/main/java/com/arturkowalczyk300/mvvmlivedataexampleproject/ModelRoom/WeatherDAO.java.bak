@@ -20,16 +20,16 @@ public interface WeatherDAO {
     @Delete
     void delete(WeatherReading weatherReading);
 
-    @Query("DELETE FROM weather_table")
+    @Query("DELETE FROM weather_table") //NON-NLS
     void deleteAllWeatherReadings();
 
-    @Query("SELECT * FROM weather_table ORDER BY readTime DESC")
+    @Query("SELECT * FROM weather_table ORDER BY readTime DESC") //NON-NLS
     LiveData<List<WeatherReading>> getAllWeatherReadings();
 
-    @Query("SELECT COUNT(*) FROM weather_table")
+    @Query("SELECT COUNT(*) FROM weather_table") //NON-NLS
     LiveData<Integer> getCount();
 
-    @Query("DELETE FROM weather_table where id NOT IN(SELECT id from weather_table ORDER BY id DESC LIMIT :MAX_COUNT)")
+    @Query("DELETE FROM weather_table where id NOT IN(SELECT id from weather_table ORDER BY id DESC LIMIT :MAX_COUNT)") //NON-NLS
     void deleteExcess(int MAX_COUNT);
 
 }

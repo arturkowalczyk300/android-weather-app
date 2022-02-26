@@ -37,7 +37,7 @@ public class WeatherReadingsRepository {
 
     private MutableLiveData<Boolean> getReadingFromApiCorrectResponse;
     private MutableLiveData<Boolean> getReadingFromApiNullBodyResponse;
-    private MutableLiveData<Pair<Boolean, String>> getReadingFromApiFailure;
+    private MutableLiveData<Pair<Boolean, Pair<Integer, String>>> getReadingFromApiFailure; //visible, string ID, additional string message
     private MutableLiveData<Boolean> getReadingFromApiExceptionThrown;
     private ConnectionLiveData internetConnectionState;
 
@@ -50,9 +50,9 @@ public class WeatherReadingsRepository {
         return RECYCLER_NORMAL_ITEM_COLOR;
     }
 
-    private static String RECYCLER_NORMAL_ITEM_COLOR = "#0E3C51";
+    private static String RECYCLER_NORMAL_ITEM_COLOR = "#0E3C51";  //NON-NLS
 
-    private static String RECYCLER_NEW_ITEM_COLOR = "#043901";
+    private static String RECYCLER_NEW_ITEM_COLOR = "#043901";  //NON-NLS
 
     private static final int ERROR_VALUE_INT = -1;
     private static final float ERROR_VALUE_FLOAT = -1;
@@ -124,7 +124,7 @@ public class WeatherReadingsRepository {
                     Log.e("ERROR", "Call enqueue failure!, "
                             + t.getClass().toString());
                     getReadingFromApiFailure.setValue(Pair.create(Boolean.TRUE,
-                            t.getClass().toString()+", "+t.getMessage().toString()));
+                            Pair.create(null, t.getClass().toString() + ", " + t.getMessage().toString())));
                 }
             });
 
@@ -148,9 +148,8 @@ public class WeatherReadingsRepository {
                 city);
     }
 
-    public void getNewestReadingFromApi()
-    {
-        if(internetAvailable)
+    public void getNewestReadingFromApi() {
+        if (internetAvailable)
             getAndInsertWeatherReadingFromApi();
     }
 
@@ -177,7 +176,7 @@ public class WeatherReadingsRepository {
         //livedata variables init
         getReadingFromApiCorrectResponse = new MutableLiveData<Boolean>();
         getReadingFromApiNullBodyResponse = new MutableLiveData<Boolean>();
-        getReadingFromApiFailure = new MutableLiveData<Pair<Boolean, String>>();
+        getReadingFromApiFailure = new MutableLiveData<Pair<Boolean, Pair<Integer, String>>>();
         getReadingFromApiExceptionThrown = new MutableLiveData<Boolean>();
         inDataLoadingStateObservable = new MutableLiveData<>(false);
         dataLoadingFromApiSuccessObservable = new MutableLiveData<>(false);
@@ -317,7 +316,7 @@ public class WeatherReadingsRepository {
         return getReadingFromApiNullBodyResponse;
     }
 
-    public LiveData<Pair<Boolean, String>> getGetReadingFromApiFailure() {
+    public LiveData<Pair<Boolean, Pair<Integer, String>>> getGetReadingFromApiFailure() {
         return getReadingFromApiFailure;
     }
 

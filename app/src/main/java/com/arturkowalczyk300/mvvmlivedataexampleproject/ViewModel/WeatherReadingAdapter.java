@@ -91,11 +91,11 @@ public class WeatherReadingAdapter extends ListAdapter<WeatherReading, WeatherRe
             holder.textViewPressure.setText(Float.toString(currentWeatherReading.getPressure()));
             holder.textViewHumidity.setText(Float.toString(currentWeatherReading.getHumidity()));
             holder.textViewCity.setText(currentWeatherReading.getCity());
-            holder.textViewUnits.setText(currentWeatherReading.getUnit() == Units.METRIC ? "°C" : "°F");
+            holder.textViewUnits.setText(currentWeatherReading.getUnit() == Units.METRIC ? "°C" : "°F");  //NON-NLS
         } catch (NullPointerException ex) {
-            Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()
-                    + ", method=" + ex.getStackTrace()[0].getMethodName()
-                    + ", line=" + ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();
+            Toast.makeText(holder.itemView.getContext(), "Null pointer exception, class=" + ex.getStackTrace()[0].getClassName()  //NON-NLS
+                    + ", method=" + ex.getStackTrace()[0].getMethodName()                                                             //NON-NLS
+                    + ", line=" + ex.getStackTrace()[0].getLineNumber(), Toast.LENGTH_LONG).show();                                   //NON-NLS
         }
     }
 

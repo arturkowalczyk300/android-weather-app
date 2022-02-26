@@ -46,6 +46,8 @@ public class AddEditWeatherReading extends AppCompatActivity {
     public static final String EXTRA_PRESSURE = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_PRESSURE";
     public static final String EXTRA_HUMIDITY = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_HUMIDITY";
     public static final String EXTRA_CITY = "com.arturkowalczyk300.mvvmlivedataexampleproject.EXTRA_CITY";
+    public static final String SUBLIME_OPTIONS = "com.arturkowalczyk300.mvvmlivedataexampleproject.SUBLIME_OPTIONS";
+    public static final String SUBLIME_PICKER = "com.arturkowalczyk300.mvvmlivedataexampleproject.SUBLIME_PICKER";
     public static final String DATE_FORMAT = "HH:mm dd.MM.yyyy";
     public static final int DATE_START_YEAR = 1900;
 
@@ -56,22 +58,22 @@ public class AddEditWeatherReading extends AppCompatActivity {
     Validator validator;
 
     @NotEmpty
-    @DecimalMin(value = Double.NEGATIVE_INFINITY, message = "Value should be number")
-    @DecimalMax(value = Double.POSITIVE_INFINITY, message = "Value should be number")
+    @DecimalMin(value = Double.NEGATIVE_INFINITY, messageResId = R.string.addedit_validator_valueShouldBeNumber)
+    @DecimalMax(value = Double.POSITIVE_INFINITY, messageResId = R.string.addedit_validator_valueShouldBeNumber)
     private EditText editTextTemperature;
 
     @NotEmpty
-    @DecimalMin(value = 0, message = "Value should be greater than or equal to 0 hPa")
-    @DecimalMax(value = 10000, message = "Value should be less than or equal to 10000 hPa")
+    @DecimalMin(value = 0, messageResId = R.string.addedit_validator_valuePressureGreaterOrEqual)
+    @DecimalMax(value = 10000, messageResId = R.string.addedit_validator_valuePressureLessOrEqual)
     private EditText editTextPressure;
 
     @NotEmpty
-    @DecimalMin(value = 0, message = "Value should be greater than or equal to 0%")
-    @DecimalMax(value = 100, message = "Value should be less than or equal to 100%")
+    @DecimalMin(value = 0, messageResId = R.string.addedit_validator_valuePercentGreaterOrEqual)
+    @DecimalMax(value = 100, messageResId = R.string.addedit_validator_valuePercentLessOrEqual)
     private EditText editTextHumidity;
 
     @NotEmpty
-    @Pattern(regex = "[\\p{Lower}\\p{Upper}\\p{Space}]+", message = "City name can contains only letters")
+    @Pattern(regex = "[\\p{Lower}\\p{Upper}\\p{Space}]+", messageResId = R.string.addedit_validator_cityShouldContainsOnlyLetters) //NON-NLS
     private EditText editTextCity;
 
 
@@ -98,7 +100,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
-            setTitle("Edit weather reading");
+            setTitle(getString(R.string.addedit_title_editWeatherReading));
 
             long readTimeLong = intent.getLongExtra(EXTRA_READTIME, -1);
             Date readTime = new Date(readTimeLong);
@@ -121,7 +123,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
             editTextHumidity.setText(Float.toString(humidity));
             editTextCity.setText(city);
         } else {
-            setTitle("Add weather reading");
+            setTitle(getString(R.string.addedit_title_addWeatherReading));
         }
 
         buttonEditReadTime.setOnClickListener(new View.OnClickListener() {
@@ -140,11 +142,11 @@ public class AddEditWeatherReading extends AppCompatActivity {
 
                 //put options to bundle
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("SUBLIME_OPTIONS", options);
+                bundle.putParcelable(SUBLIME_OPTIONS, options);
                 sublimePickerDialogFragment.setArguments(bundle);
 
                 //show
-                sublimePickerDialogFragment.show(getSupportFragmentManager(), "SUBLIME_PICKER");
+                sublimePickerDialogFragment.show(getSupportFragmentManager(), SUBLIME_PICKER);
             }
         });
 
@@ -254,7 +256,7 @@ public class AddEditWeatherReading extends AppCompatActivity {
         String cityStr = editTextCity.getText().toString();
 
         if (temperatureStr.trim().isEmpty() || pressureStr.trim().isEmpty() || humidityStr.trim().isEmpty()) {
-            Toast.makeText(this, "Please insert values!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.addedit_toast_pleaseInsertValues), Toast.LENGTH_SHORT).show();
             return;
         }
 
