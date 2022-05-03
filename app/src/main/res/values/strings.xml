@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MVVMLivedataExampleProject</string>
+    <string name="app_name">WeatherApp</string>
     <string name="addedit_validator_valueShouldBeNumber">Value should be a number!</string>
     <string name="addedit_validator_valuePressureGreaterOrEqual">Value should be greater than or equal to 0 hPa</string>
     <string name="addedit_validator_valuePressureLessOrEqual">Value should be less than or equal to 10000 hPa</string>
